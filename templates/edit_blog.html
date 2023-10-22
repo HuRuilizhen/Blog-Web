@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+
+{% block header %}
+  <h3>对博客 <i>{{ blog.title }}</i> 进行编辑</h3>
+{% endblock %}
+
+{% block content %}
+  <form action="{% url 'contents:edit_blog' blog.id %}" method="post">
+    {% csrf_token %}
+
+    <div>
+      标题：<input type="text" name="title" value="{{ blog.title }}" />
+    </div><br />
+
+    <div>
+      内容：<br />
+      <textarea name="text_content" id="editor">{{ blog.text_content }}</textarea>
+    </div><br />
+
+    <input type="submit" value="commit" class="btn btn-primary" />
+  </form>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+
+{% block header %}
+  <h3>{{ blog.title }}</h3>
+
+  <h5>作者: {{ blog.author }} | 日期: {{ blog.date_added|date:'Y-m-d H:i:s' }}</h5>
+{% endblock %}
+
+{% block content %}
+  {% autoescape off %}
+    <div class="panel">{{ blog.text_content }}</div>
+  {% endautoescape %}
+
+  <br>
+
+  <h4>评论</h4>
+  {% for comment in comments %}
+    <div class="panel panel-default">
+      <div class="panel-body">
+        {{ comment.content }}
+        <br />
+        <small>{{ comment.author }} | {{ comment.date_added }}</small>
+      </div>
+    </div>
+    {% empty %}
+    <p>还没有博客</p>
+  {% endfor %}
+
+  <br>
+
+  <h4>添加评论</h4>
+  <form action="{% url 'contents:add_comment' blog.id %}" method="post">
+    {% csrf_token %}
+    {% bootstrap_form comment_form %}
+    {% buttons %}
+    <button type="submit" class="btn btn-primary">提交</button>
+    {% endbuttons %}
+  </form>
+{% endblock %}

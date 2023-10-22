@@ -1,0 +1,83 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>blog web-recode notes here</title>
+
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/35.3.2/classic/ckeditor.js"></script>
+
+    <style>
+      .list-group-horizontal .list-group-item {
+        display: inline-block;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"></button>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="{% url 'users:home' %}">个人主页</a>
+            </li>
+            <li>
+              <a href="{% url 'contents:all_blogs' %}">公开博客</a>
+            </li>
+          </ul>
+
+          <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+              <li>
+                <a href="{% url 'contents:personal_blogs' %}">{{ user.username }}的博客</a>
+              </li>
+              <li>
+                <a href="{% url 'users:logout' %}">登出</a>
+              </li>
+            {% else %}
+              <li>
+                <a href="{% url 'users:login' %}">登录</a>
+              </li>
+              <li>
+                <a href="{% url 'users:signup' %}">注册</a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="page-header">
+        {% block header %}
+
+        {% endblock %}
+      </div>
+
+      <div>
+        {% block content %}
+
+        {% endblock %}
+      </div>
+    </div>
+
+    <script>
+      ClassicEditor.create(document.querySelector('#editor')).catch((error) => {
+        console.error(error)
+      })
+    </script>
+  </body>
+</html>

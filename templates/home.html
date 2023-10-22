@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <div class="jumbotron">
+    {% if user.is_authenticated %}
+      <h3>{{ user.username }} 的个人主页</h3>
+    {% else %}
+      <h3>在查看个人主页之前请先 <a href="{% url 'users:login' %}">登录</a></h3>
+    {% endif %}
+  </div>
+{% endblock %}
+
+{% block content %}
+  {% if user.is_authenticated %}
+    <a href="#" class="list-group-item">博客总数：{{ number_of_blogs }}</a>
+    <a href="#" class="list-group-item">浏览总量：{{ profile.visit }}</a>
+    <a href="#" class="list-group-item">当前积分：{{ profile.score }}</a>
+    <a href="#" class="list-group-item">本站排名：{{ rank }}</a>
+  {% endif %}
+{% endblock %}

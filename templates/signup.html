@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+
+{% block header %}
+  <h3>注册账户</h3>
+{% endblock %}
+
+{% block content %}
+  <form method="post" class="form">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+    <button type="submit" class="btn btn-primary">提交</button>
+    {% endbuttons %}
+  </form>
+{% endblock %}
