@@ -18,6 +18,14 @@
       .list-group-horizontal .list-group-item {
         display: inline-block;
       }
+      .list-group-horizontal .list-group-item:first-child {
+        border-top-right-radius: 0;
+        border-bottom-left-radius: 4px;
+      }
+      .list-group-horizontal .list-group-item:last-child {
+        border-top-right-radius: 4px;
+        border-bottom-left-radius: 0;
+      }
     </style>
   </head>
 
@@ -36,6 +44,9 @@
             </li>
             <li>
               <a href="{% url 'contents:all_blogs' %}">公开博客</a>
+            </li>
+            <li>
+              <a href="{% url 'contents:all_announcements' %}">管理通知</a>
             </li>
           </ul>
 

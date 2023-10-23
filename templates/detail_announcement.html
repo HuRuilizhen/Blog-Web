@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+
+{% block header %}
+  <h3>{{ announcement.title }}</h3>
+
+  <div class="list-group list-group-horizontal">
+    <small>
+      <a href="#" class="list-group-item">管理员: {{ announcement.author }}</a>
+      <a href="#" class="list-group-item">日期: {{ announcement.date_added|date:'Y-m-d H:i:s' }}</a>
+    </small>
+  </div>
+{% endblock %}
+
+{% block content %}
+  {% autoescape off %}
+    <div class="panel">{{ announcement.text_content }}</div>
+  {% endautoescape %}
+{% endblock %}

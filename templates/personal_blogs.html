@@ -1,28 +1,38 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h3>管理个人博客</h3>
+  <h3 style="display: inline;">管理个人博客</h3>
+  <form action="{% url 'contents:personal_blogs' %}" method="post" style="text-align: right; float: right;">
+    {% csrf_token %}
+    <div class="input-group">
+      <input type="text" name="keyword" />
+      <span><input type="submit" value="搜索" /></span>
+    </div>
+  </form>
 {% endblock %}
 
 {% block content %}
   <ul class="list-unstyled">
     {% for blog in blogs %}
       <li class="panel panel-default">
-        <div class="panel-body">
-          <div style="text-align:left;  float: left;">
-            <h4>{{ blog.title }}</h4> {{ blog.date_added }}
+        {% if keyword in blog.title %}
+          <div class="panel-body">
+            <div style="text-align:left;  float: left;">
+              <h4>{{ blog.title }}</h4>
+              日期： <b>{{ blog.date_added }}</b>
+            </div>
+            <div class="list-group list-group-horizontal" style="text-align:right; float: right;">
+              <a href="{% url 'contents:detail_blog' blog.id %}" class="list-group-item">展开</a>
+              <a href="{% url 'contents:edit_blog' blog.id %}" class="list-group-item">编辑</a>
+              {% if blog.is_hidden %}
+                <a href="{% url 'contents:display_blog' blog.id %}" class="list-group-item">展示</a>
+              {% else %}
+                <a href="{% url 'contents:hid_blog' blog.id %}" class="list-group-item">隐藏</a>
+              {% endif %}
+              <a href="{% url 'contents:del_blog' blog.id %}" class="list-group-item">删除</a>
+            </div>
           </div>
-          <div class="list-group list-group-horizontal" style="text-align:right; float: right;">
-            <a href="{% url 'contents:detail_blog' blog.id %}" class="list-group-item">展开</a>
-            <a href="{% url 'contents:edit_blog' blog.id %}" class="list-group-item">编辑</a>
-            {% if blog.is_hidden %}
-              <a href="{% url 'contents:display_blog' blog.id %}" class="list-group-item">展示</a>
-            {% else %}
-              <a href="{% url 'contents:hid_blog' blog.id %}" class="list-group-item">隐藏</a>
-            {% endif %}
-            <a href="{% url 'contents:del_blog' blog.id %}" class="list-group-item">删除</a>
-          </div>
-        </div>
+        {% endif %}
       </li>
       {% empty %}
       <li>还没有博客被添加</li>

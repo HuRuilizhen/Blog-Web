@@ -4,7 +4,13 @@
 {% block header %}
   <h3>{{ blog.title }}</h3>
 
-  <h5>作者: {{ blog.author }} | 日期: {{ blog.date_added|date:'Y-m-d H:i:s' }}</h5>
+  <div class="list-group list-group-horizontal">
+    <small>
+      <a href="#" class="list-group-item">作者: {{ blog.author }}</a>
+      <a href="#" class="list-group-item">日期: {{ blog.date_added|date:'Y-m-d H:i:s' }}</a>
+      <a href="#" class="list-group-item">浏览量：{{ blog.visit }}</a>
+    </small>
+  </div>
 {% endblock %}
 
 {% block content %}
@@ -12,22 +18,31 @@
     <div class="panel">{{ blog.text_content }}</div>
   {% endautoescape %}
 
-  <br>
+  <br />
 
   <h4>评论</h4>
   {% for comment in comments %}
     <div class="panel panel-default">
       <div class="panel-body">
-        {{ comment.content }}
-        <br />
-        <small>{{ comment.author }} | {{ comment.date_added }}</small>
+        <div style="text-align:left;  float: left;">
+          {{ comment.content }}
+          <br />
+          <small>{{ comment.author }} | {{ comment.date_added }}</small>
+        </div>
+        <div class="list-group list-group-horizontal" style="text-align:right; float: right;">
+          {% if user.is_authenticated %}
+            {% if user == comment.author or user == blog.author %}
+              <a href="{% url 'contents:del_comment' comment.id %}" class="list-group-item">删除</a>
+            {% endif %}
+          {% endif %}
+        </div>
       </div>
     </div>
     {% empty %}
-    <p>还没有博客</p>
+    <p>还没有评论</p>
   {% endfor %}
 
-  <br>
+  <br />
 
   <h4>添加评论</h4>
   <form action="{% url 'contents:add_comment' blog.id %}" method="post">

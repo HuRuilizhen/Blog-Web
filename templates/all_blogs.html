@@ -1,25 +1,31 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h3>公开博客</h3>
+  <h3 style="display: inline;">公开博客</h3>
+  <form action="{% url 'contents:all_blogs' %}" method="post" style="text-align: right; float: right;">
+    {% csrf_token %}
+    <div class="input-group">
+      <input type="text" name="keyword" />
+      <span><input type="submit" value="搜索" /></span>
+    </div>
+  </form>
 {% endblock %}
 
 {% block content %}
   <ul class="list-unstyled">
     {% for blog in blogs %}
-      {% if not blog.is_hidden %}
+      {% if not blog.is_hidden and keyword in blog.title %}
         <li class="panel panel-default">
           <div class="panel-body">
-            <h4>{{ blog.title }}</h4>
-            <p>
-              作者: <b>{{ blog.author }}</b>
-            </p>
-            <p>
-              日期: <b>{{ blog.date_added }}</b>
-            </p>
-            <p>
-              <a href="{% url 'contents:detail_blog' blog.id %}">展开</a>
-            </p>
+            <div style="text-align:left;  float: left;">
+              <h4>{{ blog.title }}</h4>
+              <p>
+                作者: <b>{{ blog.author }}</b> | 日期: <b>{{ blog.date_added }}</b>
+              </p>
+            </div>
+            <div class="list-group" style="text-align: right; float: right;">
+              <a href="{% url 'contents:detail_blog' blog.id %}" class="list-group-item">展开</a>
+            </div>
           </div>
         </li>
       {% endif %}

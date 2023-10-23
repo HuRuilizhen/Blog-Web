@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h3>管理通知</h3>
+{% endblock %}
+
+{% block content %}
+  <ul class="list-unstyled">
+    {% for announcement in announcements %}
+      {% if not announcement.is_hidden or user.is_superuser %}
+        <li class="panel panel-default">
+          <div class="panel-body">
+            <div style="text-align:left;  float: left;">
+              <h4>{{ announcement.title }}</h4>
+              <p>
+                管理员: <b>{{ announcement.author }}</b> | 日期: <b>{{ announcement.date_added }}</b>
+              </p>
+            </div>
+            <div class="list-group list-group-horizontal" style="text-align: right; float: right;">
+              <a href="{% url 'contents:detail_announcement' announcement.id %}" class="list-group-item">展开</a>
+              {% if user.is_superuser %}
+                <a href="{% url 'contents:edit_announcement' announcement.id %}" class="list-group-item">编辑</a>
+                <a href="{% url 'contents:del_announcement' announcement.id %}" class="list-group-item">删除</a>
+              {% endif %}
+            </div>
+          </div>
+        </li>
+      {% endif %}
+      {% empty %}
+      <li>目前还没有通知</li>
+    {% endfor %}
+  </ul>
+
+  <p>
+    {% if user.is_superuser %}
+      <a href="{% url 'contents:add_announcement' %}">添加通知</a>
+    {% endif %}
+  </p>
+{% endblock %}
