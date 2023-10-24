@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h3 style="display: inline;">用户排名</h3>
+  <div style="text-align: right; float: right;">本站用户数：{{ number_of_users }}</div>
+{% endblock %}
+
+{% block content %}
+  <table class="table panel panel-default">
+    <thead>
+      <tr>
+        <th>排名</th>
+        <th>用户</th>
+        <th>分数</th>
+        <th>浏览</th>
+        <th>博客总数</th>
+        <th>博客链接</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for profile in profiles %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ profile.user.username }}</td>
+          <td>{{ profile.score }}</td>
+          <td>{{ profile.visit }}</td>
+          <td>{{ profile.number_of_blogs }}</td>
+          <td>
+            <form action="{% url 'contents:all_blogs' %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="keyword" value="{{ profile.user.username }}" />
+              <input type="submit" value="传送" />
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

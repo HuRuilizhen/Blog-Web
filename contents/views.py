@@ -57,6 +57,8 @@ def add_blog(request):
         new_content = request.POST.get("content")
         composer = request.user
         Blog.objects.create(title=new_title, text_content=new_content, author=composer)
+        request.user.profile.number_of_blogs += 1
+        request.user.profile.save()
         return HttpResponseRedirect(reverse("contents:all_blogs"))
     context = {"new_title": new_title, "new_content": new_content}
     return render(request, "add_blog.html", context)
@@ -109,6 +111,8 @@ def del_blog(request, blog_id):
     if request.user != user:
         raise PermissionDenied("sorry you have no permission")
     Blog.objects.get(id=blog_id).delete()
+    user.profile.number_of_blogs -= 1
+    user.profile.save()
     return HttpResponseRedirect(reverse("contents:personal_blogs"))
 
 

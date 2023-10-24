@@ -8,7 +8,8 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sex_type = models.IntegerField(choices=SEX_CHOICES)
     score = models.IntegerField(default=0)
+    number_of_blogs = models.IntegerField(default=0)
     visit = models.IntegerField(default=0)
 
     def __str__(self):
-        return "user " + str(self.id)
+        return str(self.user.username)

@@ -18,14 +18,12 @@ def get_rank(profile):
     return rank
 
 
-# Create your views here.
 def home_view(request):
     if request.user.is_authenticated:
         current_user = request.user
         profile = current_user.profile
-        number_of_blogs = current_user.blog_set.count()
         rank = get_rank(profile)
-        context = {"profile": profile, "number_of_blogs": number_of_blogs, "rank": rank}
+        context = {"profile": profile, "rank": rank}
         return render(request, "home.html", context)
     else:
         return render(request, "home.html")
@@ -71,3 +69,9 @@ def signup_view(request):
         form = SignupForm()
 
     return render(request, "signup.html", {"form": form})
+
+def ranklist_view(request):
+    profiles = Profile.objects.order_by("-score")
+    number_of_users = Profile.objects.count()
+    context = {"profiles": profiles, "number_of_users": number_of_users}
+    return render(request, "ranklist.html", context=context)
