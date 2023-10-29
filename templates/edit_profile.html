@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+
+{% block header %}
+  <h3>编辑账户</h3>
+{% endblock %}
+
+{% block content %}
+  <form action="{% url 'users:edit_profile' %}" method="post">
+    {% csrf_token %}
+
+    <div class="input-group">
+      <span class="input-group-addon">密码</span>
+      <input class="form-control" type="password" name="new_password_1" value="{{ new_password_1 }}" />
+    </div><br />
+
+    <div class="input-group">
+      <span class="input-group-addon">确认</span>
+      <input class="form-control" type="password" name="new_password_2" value="{{ new_password_2 }}" />
+    </div><br />
+
+    {% if error_info != '' %}
+      <div class="alert alert-warning">{{ error_info }}</div>
+    {% endif %}
+
+    <input type="submit" value="提交" class="btn btn-primary" />
+  </form>
+{% endblock %}

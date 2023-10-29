@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from .models import *
 from .forms import *
@@ -69,6 +70,34 @@ def signup_view(request):
         form = SignupForm()
 
     return render(request, "signup.html", {"form": form})
+
+
+@login_required
+def edit_profile_view(request):
+    current_user = request.user
+    new_password_1 = ""
+    new_password_2 = ""
+    error_info = ""
+
+    if request.method == "POST":
+        new_password_1 = request.POST.get("new_password_1")
+        new_password_2 = request.POST.get("new_password_2")
+
+        if new_password_1 == new_password_2:
+            current_user.set_password(new_password_1)
+            current_user.save()
+            return redirect("/home/")
+
+        error_info = "密码不一致"
+
+    context = {
+        "new_password_1": new_password_1,
+        "new_password_2": new_password_2,
+        "error_info": error_info,
+    }
+
+    return render(request, "edit_profile.html", context)
+
 
 def ranklist_view(request):
     profiles = Profile.objects.order_by("-score")

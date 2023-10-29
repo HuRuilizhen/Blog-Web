@@ -3,7 +3,8 @@
 {% block header %}
   <div class="jumbotron">
     {% if user.is_authenticated %}
-      <h3>{{ user.username }} 的个人主页</h3>
+      <h3 style="display: inline;">{{ user.username }} 的主页</h3>
+      <a href="{% url 'users:edit_profile' %}" class="btn btn-default" style="text-align: right; float: right;">修改账户</a>
     {% else %}
       <h3>在查看个人主页之前请先 <a href="{% url 'users:login' %}">登录</a></h3>
     {% endif %}
