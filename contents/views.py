@@ -12,7 +12,7 @@ from users.models import *
 @login_required
 def personal_blogs(request):
     user = request.user
-    blogs = user.blog_set.order_by("date_added")
+    blogs = user.blog_set.order_by("-date_added")
     context = {"blogs": blogs, "keyword": ""}
 
     if request.method == "POST":
@@ -22,7 +22,7 @@ def personal_blogs(request):
 
 
 def all_blogs(request):
-    blogs = Blog.objects.order_by("date_added")
+    blogs = Blog.objects.order_by("-date_added")
     context = {"blogs": blogs, "keyword": ""}
 
     if request.method == "POST":
@@ -117,7 +117,7 @@ def del_blog(request, blog_id):
 
 
 def all_announcements(request):
-    announcements = Announcement.objects.order_by("date_added")
+    announcements = Announcement.objects.order_by("-date_added")
     context = {"announcements": announcements}
     return render(request, "all_announcements.html", context)
 
