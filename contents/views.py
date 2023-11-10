@@ -139,7 +139,8 @@ def add_announcement(request):
         announcementform = AnnouncementForm(request.POST)
         if announcementform.is_valid():
             announcement = announcementform.save(commit=False)
-            announcementform.author = request.user
+            announcement.author = request.user
+            announcement.save()
             return HttpResponseRedirect(reverse("contents:all_announcements"))
     context = {"announcementform": announcementform}
     return render(request, "add_announcement.html", context)
