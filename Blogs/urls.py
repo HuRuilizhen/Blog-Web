@@ -24,10 +24,4 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include(("users.urls", "users"), namespace="users")),
     path("", include(("contents.urls", "contents"), namespace="contents")),
-    re_path(
-        r"^static/(?P<path>.*)$",
-        static.serve,
-        {"document_root": settings.STATIC_ROOT},
-        name="static",
-    ),
 ]

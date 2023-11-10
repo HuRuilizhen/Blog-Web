@@ -14,20 +14,20 @@ def personal_blogs(request):
     user = request.user
     blogs = user.blog_set.order_by("date_added")
     context = {"blogs": blogs, "keyword": ""}
-    
-    if (request.method == "POST"):
+
+    if request.method == "POST":
         context["keyword"] = request.POST.get("keyword")
-    
+
     return render(request, "personal_blogs.html", context)
 
 
 def all_blogs(request):
     blogs = Blog.objects.order_by("date_added")
     context = {"blogs": blogs, "keyword": ""}
-    
-    if (request.method == "POST"):
+
+    if request.method == "POST":
         context["keyword"] = request.POST.get("keyword")
-        
+
     return render(request, "all_blogs.html", context)
 
 
@@ -50,17 +50,17 @@ def detail_blog(request, blog_id):
 @login_required
 def add_blog(request):
     if request.method != "POST":
-        new_title = "edit title here"
-        new_content = "edit content here"
+        blogform = BlogForm()
     else:
-        new_title = request.POST.get("title")
-        new_content = request.POST.get("content")
-        composer = request.user
-        Blog.objects.create(title=new_title, text_content=new_content, author=composer)
-        request.user.profile.number_of_blogs += 1
-        request.user.profile.save()
-        return HttpResponseRedirect(reverse("contents:all_blogs"))
-    context = {"new_title": new_title, "new_content": new_content}
+        blogform = BlogForm(request.POST)
+        if blogform.is_valid():
+            blog = blogform.save(commit=False)
+            blog.author = request.user
+            blog.save()
+            request.user.profile.number_of_blogs += 1
+            request.user.profile.save()
+            return HttpResponseRedirect(reverse("contents:all_blogs"))
+    context = {"blogform": blogform}
     return render(request, "add_blog.html", context)
 
 
@@ -73,13 +73,13 @@ def edit_blog(request, blog_id):
     blog = Blog.objects.get(id=blog_id)
 
     if request.method != "POST":
-        form = BlogForm(instance=blog)
+        blogform = BlogForm(instance=blog)
     else:
-        form = BlogForm(request.POST, request.FILES, instance=blog)
-        if form.is_valid():
-            form.save()
+        blogform = BlogForm(request.POST, instance=blog)
+        if blogform:
+            blogform.save()
         return HttpResponseRedirect(reverse("contents:all_blogs"))
-    context = {"form": form, "blog": blog}
+    context = {"blog": blog, "blogform": blogform}
     return render(request, "edit_blog.html", context)
 
 
@@ -107,7 +107,7 @@ def display_blog(request, blog_id):
 
 @login_required
 def del_blog(request, blog_id):
-    user= Blog.objects.get(id=blog_id).author
+    user = Blog.objects.get(id=blog_id).author
     if request.user != user:
         raise PermissionDenied("sorry you have no permission")
     Blog.objects.get(id=blog_id).delete()
@@ -130,17 +130,18 @@ def detail_announcement(request, announcement_id):
 
 @login_required
 def add_announcement(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied("sorry you have no permission")
+
     if request.method != "POST":
-        new_title = "edit title here"
-        new_content = "edit content here"
+        announcementform = AnnouncementForm()
     else:
-        new_title = request.POST.get("title")
-        new_content = request.POST.get("content")
-        composer = request.user
-        Announcement.objects.create(
-            title=new_title, text_content=new_content, author=composer)
-        return HttpResponseRedirect(reverse("contents:all_announcements"))
-    context = {"new_title": new_title, "new_content": new_content}
+        announcementform = AnnouncementForm(request.POST)
+        if announcementform.is_valid():
+            announcement = announcementform.save(commit=False)
+            announcementform.author = request.user
+            return HttpResponseRedirect(reverse("contents:all_announcements"))
+    context = {"announcementform": announcementform}
     return render(request, "add_announcement.html", context)
 
 
@@ -152,14 +153,17 @@ def edit_announcement(request, announcement_id):
     announcement = Announcement.objects.get(id=announcement_id)
 
     if request.method != "POST":
-        form = AnnouncementForm(instance=announcement)
+        announcementform = AnnouncementForm(instance=announcement)
     else:
-        form = AnnouncementForm(request.POST, request.FILES, instance=announcement)
-        if form.is_valid():
-            form.save()
+        announcementform = AnnouncementForm(
+            request.POST, request.FILES, instance=announcement
+        )
+        if announcementform.is_valid():
+            announcementform.save()
         return HttpResponseRedirect(reverse("contents:all_announcements"))
-    context = {"form": form, "announcement": announcement}
+    context = {"announcement": announcement, "announcementform": announcementform}
     return render(request, "edit_announcement.html", context)
+
 
 @login_required
 def del_announcement(request, announcement_id):
@@ -167,6 +171,7 @@ def del_announcement(request, announcement_id):
         raise PermissionDenied("sorry you have no permission")
     Announcement.objects.get(id=announcement_id).delete()
     return HttpResponseRedirect(reverse("contents:all_announcements"))
+
 
 @login_required
 def add_comment(request, blog_id):
@@ -190,9 +195,9 @@ def del_comment(request, comment_id):
     comment_user = current_comment.author
     blog_user = current_blog.author
     blog_id = current_blog.id
-    
+
     if request.user != comment_user and request.user != blog_user:
         raise PermissionDenied("sorry you have no permission")
     Comment.objects.get(id=comment_id).delete()
-    
+
     return redirect(f"/detail_blog/{blog_id}/")

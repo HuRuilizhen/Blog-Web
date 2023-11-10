@@ -2,6 +2,7 @@
 
 {% block header %}
   <h3 style="display: inline;">公开博客</h3>
+  <a class="btn btn-default" href="{% url 'contents:add_blog' %}">添加博客</a>
   <form action="{% url 'contents:all_blogs' %}" method="post" style="text-align: right; float: right;">
     {% csrf_token %}
     <div class="input-group">
@@ -36,7 +37,4 @@
     {% endfor %}
   </ul>
 
-  <p>
-    <a href="{% url 'contents:add_blog' %}">添加博客</a>
-  </p>
 {% endblock %}

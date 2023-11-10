@@ -125,4 +125,41 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
-STATIC_ROOT = os.path.join(BASE_DIR, "static_files")
+
+
+CKEDITOR_CONFIGS = {
+    "default": {
+        "width": "100%",
+        "toolbar": "Custom",
+        "toolbar_Basic": [["Bold", "Italic"]],
+        "toolbar_Custom": [
+            ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript"],
+            ["TextColor", "BGColor"],
+            [
+                "NumberedList",
+                "BulletedList",
+                "-",
+                "Outdent",
+                "Indent",
+                "-",
+                "Blockquote",
+                "CodeSnippet",
+                "-",
+                "JustifyLeft",
+                "JustifyCenter",
+                "JustifyRight",
+                "JustifyBlock",
+            ],
+            [
+                "Link",
+                "Image",
+                "Table",
+                "HorizontalRule",
+                "Smiley",
+                "SpecialChar",
+            ],
+            ["Styles", "Format", "Font", "FontSize"],
+        ],
+        "extraPlugins": ",".join(["codesnippet"]),
+    }
+}

@@ -14,10 +14,7 @@
 {% endblock %}
 
 {% block content %}
-  {% autoescape off %}
-    <div class="panel">{{ blog.text_content }}</div>
-  {% endautoescape %}
-
+  <div class="panel">{{ blog.text_content|safe }}</div>
   <br />
 
   <h4>评论</h4>

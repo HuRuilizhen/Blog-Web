@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h3 style="display: inline;">管理个人博客</h3>
+  <h3 style="display: inline;">个人博客</h3>
+  <a class="btn btn-default" href="{% url 'contents:add_blog' %}">添加博客</a>
   <form action="{% url 'contents:personal_blogs' %}" method="post" style="text-align: right; float: right;">
     {% csrf_token %}
     <div class="input-group">
@@ -38,8 +39,4 @@
       <li>还没有博客被添加</li>
     {% endfor %}
   </ul>
-
-  <p>
-    <a href="{% url 'contents:add_blog' %}">添加博客</a>
-  </p>
 {% endblock %}

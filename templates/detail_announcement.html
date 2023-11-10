@@ -13,7 +13,5 @@
 {% endblock %}
 
 {% block content %}
-  {% autoescape off %}
-    <div class="panel">{{ announcement.text_content }}</div>
-  {% endautoescape %}
+  <div class="panel">{{ announcement.text_content|safe }}</div>
 {% endblock %}

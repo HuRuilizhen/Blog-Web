@@ -73,7 +73,7 @@ default port: 8000
 
 open browser at 127.0.0.1:8000
 
-### - Start server mode on <font color=pink> LAN </font>
+### - Start server on <font color=pink> LAN </font>
 
 turn off debug mode (as default), run following commands
 ```
@@ -87,3 +87,13 @@ run in insecure mode (do not recommanded)
 ```
     python manage.py runserver 0.0.0.0:8000 --insecure
 ```
+
+### - Start server on <font color=pink> INTERNET </font>
+
+run in background in insecure mode (do not recommanded)
+
+```
+    nohup python manage.py runserver 0.0.0.0:8000 --insecure
+```
+
+

@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h3>管理通知</h3>
+  <h3 style="display: inline;">管理通知</h3>
+  {% if user.is_superuser %}
+    <a class="btn btn-default" href="{% url 'contents:add_announcement' %}">添加通知</a>
+  {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -31,9 +34,4 @@
     {% endfor %}
   </ul>
 
-  <p>
-    {% if user.is_superuser %}
-      <a href="{% url 'contents:add_announcement' %}">添加通知</a>
-    {% endif %}
-  </p>
 {% endblock %}
