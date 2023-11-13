@@ -6,7 +6,7 @@
 
   <div class="list-group list-group-horizontal">
     <small>
-      <a href="#" class="list-group-item">作者: {{ blog.author }}</a>
+      <a href="#" class="list-group-item">作者: <img src="{{ blog.author.profile.user_photo_url }}" width="18" height="18" class="img-rounded" /> {{ blog.author }}</a>
       <a href="#" class="list-group-item">日期: {{ blog.date_added|date:'Y-m-d H:i:s' }}</a>
       <a href="#" class="list-group-item">浏览量：{{ blog.visit }}</a>
     </small>
@@ -16,37 +16,32 @@
 {% block content %}
   <div class="panel">{{ blog.text_content|safe }}</div>
   <br />
-
-  <h4>评论</h4>
-  {% for comment in comments %}
-    <div class="panel panel-default">
-      <div class="panel-body">
-        <div style="text-align:left;  float: left;">
-          {{ comment.content }}
-          <br />
-          <small>{{ comment.author }} | {{ comment.date_added }}</small>
-        </div>
-        <div class="list-group list-group-horizontal" style="text-align:right; float: right;">
-          {% if user.is_authenticated %}
-            {% if user == comment.author or user == blog.author %}
-              <a href="{% url 'contents:del_comment' comment.id %}" class="list-group-item">删除</a>
-            {% endif %}
+  <div class="panel panel-default">
+    <div class="panel-heading">评论</div>
+    {% for comment in comments %}
+      <div class="panel-body">{{ comment.content|safe }}</div>
+      <div class="panel-footer">
+        <small><img src="{{ blog.author.profile.user_photo_url }}" width="18" height="18" class="img-rounded" /> {{ comment.author }} | {{ comment.date_added }}</small>
+        {% if user.is_authenticated %}
+          {% if user == comment.author or user == blog.author %}
+            <a href="{% url 'contents:del_comment' comment.id %}" class="btn btn-default btn-xs" style="text-align:right; float:right;">删除</a>
           {% endif %}
-        </div>
+        {% endif %}
       </div>
-    </div>
-    {% empty %}
-    <p>还没有评论</p>
-  {% endfor %}
+      {% empty %}
+      <div class="panel-body">还没有评论</div>
+    {% endfor %}
+  </div>
 
   <br />
 
-  <h4>添加评论</h4>
-  <form action="{% url 'contents:add_comment' blog.id %}" method="post">
+  <form class="panel panel-default" action="{% url 'contents:add_comment' blog.id %}" method="post">
+    <div class="panel-heading">
+      <div style="display: inline;">添加评论</div>
+      <input type="submit" value="提交" class="btn btn-default btn-xs" style="float: right;" />
+    </div>
     {% csrf_token %}
-    {% bootstrap_form comment_form %}
-    {% buttons %}
-    <button type="submit" class="btn btn-primary">提交</button>
-    {% endbuttons %}
+    <div class="panel-body">{{ commentform.media }}
+      {{ commentform.content }}</div>
   </form>
 {% endblock %}

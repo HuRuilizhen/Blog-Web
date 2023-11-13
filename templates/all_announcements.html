@@ -14,13 +14,12 @@
         <li class="panel panel-default">
           <div class="panel-body">
             <div style="text-align:left;  float: left;">
-              <h4>{{ announcement.title }}</h4>
+              <h4><a href="{% url 'contents:detail_announcement' announcement.id %}" style="text-decoration: none; color: black;"><b>{{ announcement.title }}</b></a></h4>
               <p>
-                管理员: <b>{{ announcement.author }}</b> | 日期: <b>{{ announcement.date_added }}</b>
+                <img src="{{ announcement.author.profile.user_photo_url }}" width="30" height="30" class="img-rounded" /> &nbsp; <b>{{ announcement.author }}</b> &nbsp; | &nbsp; <b>{{ announcement.date_added }}</b>
               </p>
             </div>
             <div class="list-group list-group-horizontal" style="text-align: right; float: right;">
-              <a href="{% url 'contents:detail_announcement' announcement.id %}" class="list-group-item">展开</a>
               {% if user.is_superuser %}
                 <a href="{% url 'contents:edit_announcement' announcement.id %}" class="list-group-item">编辑</a>
                 <a href="{% url 'contents:del_announcement' announcement.id %}" class="list-group-item">删除</a>
@@ -33,5 +32,4 @@
       <li>目前还没有通知</li>
     {% endfor %}
   </ul>
-
 {% endblock %}

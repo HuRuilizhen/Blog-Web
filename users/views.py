@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from .models import *
 from .forms import *
-from contents.models import *
 from django.db.models import F, Window
 from django.db.models.functions import Rank
 
@@ -28,6 +27,14 @@ def home_view(request):
         return render(request, "home.html", context)
     else:
         return render(request, "home.html")
+
+
+def user_home_view(request, user_id):
+    owner_user = User.objects.get(id=user_id)
+    profile = owner_user.profile
+    rank = get_rank(profile)
+    context = {"profile": profile, "rank": rank}
+    return render(request, "user_home.html", context)
 
 
 def login_view(request):
@@ -75,9 +82,102 @@ def signup_view(request):
 @login_required
 def edit_profile_view(request):
     current_user = request.user
+    current_profile = current_user.profile
+    personal_homepage_form = ProfilePersonalHomepageForm(instance=current_profile)
     new_password_1 = ""
     new_password_2 = ""
     error_info = ""
+
+    context = {
+        "profile": current_profile,
+        "personal_homepage_form": personal_homepage_form,
+        "new_password_1": new_password_1,
+        "new_password_2": new_password_2,
+        "error_info": error_info,
+    }
+
+    return render(request, "edit_profile.html", context)
+
+
+@login_required
+def edit_profile_user_description_view(request):
+    current_user = request.user
+    current_profile = current_user.profile
+    personal_homepage_form = ProfilePersonalHomepageForm(instance=current_profile)
+    new_password_1 = ""
+    new_password_2 = ""
+    error_info = ""
+
+    if request.method == "POST":
+        current_profile.user_description = request.POST.get("user_description")
+        current_profile.save()
+
+    context = {
+        "profile": current_profile,
+        "personal_homepage_form": personal_homepage_form,
+        "new_password_1": new_password_1,
+        "new_password_2": new_password_2,
+        "error_info": error_info,
+    }
+
+    return render(request, "edit_profile.html", context)
+
+
+@login_required
+def edit_profile_user_photo_url_view(request):
+    current_user = request.user
+    current_profile = current_user.profile
+    personal_homepage_form = ProfilePersonalHomepageForm(instance=current_profile)
+    new_password_1 = ""
+    new_password_2 = ""
+    error_info = ""
+
+    if request.method == "POST":
+        current_profile.user_photo_url = request.POST.get("user_photo_url")
+        current_profile.save()
+
+    context = {
+        "profile": current_profile,
+        "personal_homepage_form": personal_homepage_form,
+        "new_password_1": new_password_1,
+        "new_password_2": new_password_2,
+        "error_info": error_info,
+    }
+
+    return render(request, "edit_profile.html", context)
+
+
+@login_required
+def edit_profile_personal_homepage_view(request):
+    current_user = request.user
+    current_profile = current_user.profile
+    personal_homepage_form = ProfilePersonalHomepageForm(instance=current_profile)
+    new_password_1 = ""
+    new_password_2 = ""
+    error_info = ""
+
+    if request.method == "POST":
+        personal_homepage_form = ProfilePersonalHomepageForm(
+            request.POST, instance=current_profile
+        )
+        personal_homepage_form.save()
+
+    context = {
+        "profile": current_profile,
+        "personal_homepage_form": personal_homepage_form,
+        "new_password_1": new_password_1,
+        "new_password_2": new_password_2,
+        "error_info": error_info,
+    }
+
+    return render(request, "edit_profile.html", context)
+
+
+@login_required
+def edit_profile_password_view(request):
+    current_user = request.user
+    current_profile = current_user.profile
+    personal_homepage_form = ProfilePersonalHomepageForm(instance=current_profile)
 
     if request.method == "POST":
         new_password_1 = request.POST.get("new_password_1")
@@ -91,6 +191,8 @@ def edit_profile_view(request):
         error_info = "密码不一致"
 
     context = {
+        "profile": current_profile,
+        "personal_homepage_form": personal_homepage_form,
         "new_password_1": new_password_1,
         "new_password_2": new_password_2,
         "error_info": error_info,

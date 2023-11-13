@@ -21,7 +21,10 @@
       {% for profile in profiles %}
         <tr>
           <td>{{ forloop.counter }}</td>
-          <td>{{ profile.user.username }}</td>
+          <td>
+            <a href="{% url 'users:user_home' profile.user.id %}"><img src="{{ profile.user_photo_url }}" width="40" height="40" class="img-rounded" /></a>
+            &nbsp; <a href="{% url 'users:user_home' profile.user.id %}" style="text-decoration: none; color: black;"><b>{{ profile.user.username }}</b></a>
+          </td>
           <td>{{ profile.score }}</td>
           <td>{{ profile.visit }}</td>
           <td>{{ profile.number_of_blogs }}</td>

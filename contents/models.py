@@ -37,7 +37,7 @@ class Comment(models.Model):
     blog = models.ForeignKey(Blog, on_delete=models.SET_NULL, null=True, blank=True)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
-    content = models.TextField()
+    content = RichTextField(config_name="comment")
     is_hidden = models.BooleanField(default=False)
 
     def __str__(self):

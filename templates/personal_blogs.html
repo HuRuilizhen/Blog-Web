@@ -15,15 +15,14 @@
 {% block content %}
   <ul class="list-unstyled">
     {% for blog in blogs %}
-      <li class="panel panel-default">
-        {% if keyword in blog.title %}
+      {% if keyword in blog.title %}
+        <li class="panel panel-default">
           <div class="panel-body">
             <div style="text-align:left;  float: left;">
-              <h4>{{ blog.title }}</h4>
-              日期： <b>{{ blog.date_added }}</b>
+              <h4><a href="{% url 'contents:detail_blog' blog.id %}" style="text-decoration: none; color: black;"><b>{{ blog.title }}</b></a></h4>
+              <b>{{ blog.date_added }}</b>
             </div>
             <div class="list-group list-group-horizontal" style="text-align:right; float: right;">
-              <a href="{% url 'contents:detail_blog' blog.id %}" class="list-group-item">展开</a>
               <a href="{% url 'contents:edit_blog' blog.id %}" class="list-group-item">编辑</a>
               {% if blog.is_hidden %}
                 <a href="{% url 'contents:display_blog' blog.id %}" class="list-group-item">展示</a>
@@ -33,8 +32,9 @@
               <a href="{% url 'contents:del_blog' blog.id %}" class="list-group-item">删除</a>
             </div>
           </div>
-        {% endif %}
-      </li>
+        </li>
+      {% endif %}
+
       {% empty %}
       <li>还没有博客被添加</li>
     {% endfor %}

@@ -19,14 +19,11 @@
         {% if keyword in blog.title or keyword in blog.author.username %}
           <li class="panel panel-default">
             <div class="panel-body">
-              <div style="text-align:left;  float: left;">
-                <h4>{{ blog.title }}</h4>
-                <p>
-                  作者: <b>{{ blog.author }}</b> | 日期: <b>{{ blog.date_added }}</b>
-                </p>
-              </div>
-              <div class="list-group" style="text-align: right; float: right;">
-                <a href="{% url 'contents:detail_blog' blog.id %}" class="list-group-item">展开</a>
+              <h4><a href="{% url 'contents:detail_blog' blog.id %}" style="text-decoration: none; color: black;"><b>{{ blog.title }}</b></a></h4>
+              <div>
+                <img src="{{ blog.author.profile.user_photo_url }}" width="30" height="30" class="img-rounded" />&nbsp;
+                <b>{{ blog.author }}</b>
+                &nbsp; | &nbsp; <b>{{ blog.date_added }}</b>
               </div>
             </div>
           </li>
@@ -36,5 +33,4 @@
       <li>目前还没有博客</li>
     {% endfor %}
   </ul>
-
 {% endblock %}

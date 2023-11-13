@@ -130,8 +130,8 @@ STATICFILES_DIRS = [
 CKEDITOR_CONFIGS = {
     "default": {
         "width": "100%",
+        "tabSpaces": 4,
         "toolbar": "Custom",
-        "toolbar_Basic": [["Bold", "Italic"]],
         "toolbar_Custom": [
             ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript"],
             ["TextColor", "BGColor"],
@@ -161,5 +161,21 @@ CKEDITOR_CONFIGS = {
             ["Styles", "Format", "Font", "FontSize"],
         ],
         "extraPlugins": ",".join(["codesnippet"]),
-    }
+    },
+    "comment": {
+        "width": "1100px",
+        "height": "50px",
+        "tabSpaces": 4,
+        "toolbar": "Custom",
+        "toolbar_Custom": [
+            ["Bold", "Italic", "Underline"],
+            ["TextColor", "BGColor"],
+            [
+                "Link",
+                "Image",
+                "Smiley",
+                "SpecialChar",
+            ],
+        ],
+    },
 }

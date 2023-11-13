@@ -6,23 +6,94 @@
 {% endblock %}
 
 {% block content %}
-  <form action="{% url 'users:edit_profile' %}" method="post">
+  <form class="panel panel-default" action="{% url 'users:edit_profile_user_photo_url' %}" method="post">
     {% csrf_token %}
 
-    <div class="input-group">
-      <span class="input-group-addon">密码</span>
-      <input class="form-control" type="password" name="new_password_1" value="{{ new_password_1 }}" />
-    </div><br />
+    <div class="panel-heading">
+      <div style="text-align:left;  float: left;">
+        <h4>修改用户头像</h4>
+      </div>
+      <div style="text-align: right; float: right;">
+        <input class="btn btn-default" type="submit" value="提交" />
+      </div>
+      <hr />
+    </div>
 
-    <div class="input-group">
-      <span class="input-group-addon">确认</span>
-      <input class="form-control" type="password" name="new_password_2" value="{{ new_password_2 }}" />
-    </div><br />
-
-    {% if error_info != '' %}
-      <div class="alert alert-warning">{{ error_info }}</div>
-    {% endif %}
-
-    <input type="submit" value="提交" class="btn btn-primary" />
+    <div class="panel-body">
+      <img src=" {{ profile.user_photo_url }} " width="70" height="70" class="img-rounded" />
+      <br /><br />
+      <div class="input-group">
+        <span class="input-group-addon">头像url</span>
+        <input class="form-control" type="text" name="user_photo_url" value="{{ profile.user_photo_url }}" />
+      </div>
+    </div>
   </form>
+
+  <form class="panel panel-default" action="{% url 'users:edit_profile_user_description' %}" method="post">
+    {% csrf_token %}
+
+    <div class="panel-heading">
+      <div style="text-align:left;  float: left;">
+        <h4>修改用户描述</h4>
+      </div>
+      <div style="text-align: right; float: right;">
+        <input class="btn btn-default" type="submit" value="提交" />
+      </div>
+      <hr />
+    </div>
+
+    <div class="panel-body">
+      <div class="input-group">
+        <span class="input-group-addon">个人描述</span>
+        <input class="form-control" type="text" name="user_description" value="{{ profile.user_description }}" />
+      </div>
+    </div>
+  </form>
+
+  <form class="panel panel-default" action="{% url 'users:edit_profile_personal_homepage' %}" method="post">
+    {% csrf_token %}
+
+    <div class="panel-heading">
+      <div style="text-align:left;  float: left;">
+        <h4>修改主页介绍</h4>
+      </div>
+      <div style="text-align: right; float: right;">
+        <input class="btn btn-default" type="submit" value="提交" />
+      </div>
+      <hr />
+    </div>
+
+    <div class="panel-body">{{ personal_homepage_form.media }}
+      {{ personal_homepage_form.personal_homepage }}</div>
+  </form>
+
+  <form class="panel panel-default" action="{% url 'users:edit_profile_password' %}" method="post">
+    {% csrf_token %}
+
+    <div class="panel-heading">
+      <div style="text-align:left;  float: left;">
+        <h4>修改用户密码</h4>
+      </div>
+      <div style="text-align: right; float: right;">
+        <input class="btn btn-default" type="submit" value="提交" />
+      </div>
+      <hr />
+    </div>
+
+    <div class="panel-body">
+      <div class="input-group">
+        <span class="input-group-addon">密码</span>
+        <input class="form-control" type="password" name="new_password_1" value="{{ new_password_1 }}" />
+      </div><br />
+
+      <div class="input-group">
+        <span class="input-group-addon">确认</span>
+        <input class="form-control" type="password" name="new_password_2" value="{{ new_password_2 }}" />
+      </div><br />
+      {% if error_info != '' %}
+        <div class="alert alert-warning">{{ error_info }}</div>
+      {% endif %}
+    </div>
+  </form>
+  <br />
 {% endblock %}

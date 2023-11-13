@@ -10,3 +10,9 @@ class SignupForm(UserCreationForm):
 class LoginForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput())
     password = forms.CharField(widget=forms.PasswordInput())
+
+
+class ProfilePersonalHomepageForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ["personal_homepage"]

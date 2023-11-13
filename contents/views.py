@@ -34,8 +34,8 @@ def all_blogs(request):
 def detail_blog(request, blog_id):
     blog = Blog.objects.get(id=blog_id)
     comments = blog.comment_set.order_by("date_added")
-    comment_form = CommentForm()
-    context = {"blog": blog, "comments": comments, "comment_form": comment_form}
+    commentform = CommentForm()
+    context = {"blog": blog, "comments": comments, "commentform": commentform}
     owner_user = blog.author
     visit_user = request.user
     if owner_user != visit_user:
@@ -177,11 +177,11 @@ def del_announcement(request, announcement_id):
 @login_required
 def add_comment(request, blog_id):
     if request.method != "POST":
-        form = CommentForm()
+        commentform = CommentForm()
     else:
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
+        commentform = CommentForm(request.POST)
+        if commentform.is_valid():
+            comment = commentform.save(commit=False)
             comment.author = request.user
             comment.blog = Blog.objects.get(id=blog_id)
             comment.save()
