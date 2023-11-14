@@ -6,9 +6,25 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import *
 from users.models import *
+from users.views import user_home_view
 
 
 # Create your views here.
+def blog_user_home_view(request, blog_id):
+    user_id = Blog.objects.get(id=blog_id).author.id
+    return user_home_view(request, user_id)
+
+
+def comment_user_home_view(request, comment_id):
+    user_id = Comment.objects.get(id=comment_id).author.id
+    return user_home_view(request, user_id)
+
+
+def announcement_user_home_view(request, announcement_id):
+    user_id = Announcement.objects.get(id=announcement_id).author.id
+    return user_home_view(request, user_id)
+
+
 @login_required
 def personal_blogs(request):
     user = request.user

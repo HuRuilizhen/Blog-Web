@@ -21,8 +21,8 @@
             <div class="panel-body">
               <h4><a href="{% url 'contents:detail_blog' blog.id %}" style="text-decoration: none; color: black;"><b>{{ blog.title }}</b></a></h4>
               <div>
-                <img src="{{ blog.author.profile.user_photo_url }}" width="30" height="30" class="img-rounded" />&nbsp;
-                <b>{{ blog.author }}</b>
+                <a href="{% url 'contents:blog_user_home' blog.id %}" style="text-decoration: none; color: black;"><img src="{{ blog.author.profile.user_photo_url }}" width="30" height="30" class="img-rounded" /></a>&nbsp;
+                <a href="{% url 'contents:blog_user_home' blog.id %}" style="text-decoration: none; color: black;"><b>{{ blog.author }}</b></a>
                 &nbsp; | &nbsp; <b>{{ blog.date_added }}</b>
               </div>
             </div>

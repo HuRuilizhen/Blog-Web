@@ -4,6 +4,19 @@ from django.conf.urls.static import static
 from .views import *
 
 urlpatterns = [
+    re_path(
+        "^blog_user_home/(?P<blog_id>\d+)/$", blog_user_home_view, name="blog_user_home"
+    ),
+    re_path(
+        "^comment_user_home/(?P<comment_id>\d+)/$",
+        comment_user_home_view,
+        name="comment_user_home",
+    ),
+    re_path(
+        "^announcement_user_home/(?P<announcement_id>\d+)/$",
+        announcement_user_home_view,
+        name="announcement_user_home",
+    ),
     re_path("^personal_blogs/$", personal_blogs, name="personal_blogs"),
     re_path("^all_blogs/$", all_blogs, name="all_blogs"),
     re_path("^detail_blog/(?P<blog_id>\d+)/$", detail_blog, name="detail_blog"),

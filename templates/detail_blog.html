@@ -6,7 +6,7 @@
 
   <div class="list-group list-group-horizontal">
     <small>
-      <a href="#" class="list-group-item">作者: <img src="{{ blog.author.profile.user_photo_url }}" width="18" height="18" class="img-rounded" /> {{ blog.author }}</a>
+      <a href="{% url 'contents:blog_user_home' blog.id %}" class="list-group-item">作者: <img src="{{ blog.author.profile.user_photo_url }}" width="18" height="18" class="img-rounded" /> {{ blog.author }}</a>
       <a href="#" class="list-group-item">日期: {{ blog.date_added|date:'Y-m-d H:i:s' }}</a>
       <a href="#" class="list-group-item">浏览量：{{ blog.visit }}</a>
     </small>
@@ -21,7 +21,10 @@
     {% for comment in comments %}
       <div class="panel-body">{{ comment.content|safe }}</div>
       <div class="panel-footer">
-        <small><img src="{{ blog.author.profile.user_photo_url }}" width="18" height="18" class="img-rounded" /> {{ comment.author }} | {{ comment.date_added }}</small>
+        <small>
+          <a href="{% url 'contents:comment_user_home' comment.id %}" style="text-decoration: none; color: black;"><img src="{{ comment.author.profile.user_photo_url }}" width="18" height="18" class="img-rounded" /></a>
+          <a href="{% url 'contents:comment_user_home' comment.id %}" style="text-decoration: none; color: black;">{{ comment.author }}</a> &nbsp; | &nbsp;{{ comment.date_added }}
+        </small>
         {% if user.is_authenticated %}
           {% if user == comment.author or user == blog.author %}
             <a href="{% url 'contents:del_comment' comment.id %}" class="btn btn-default btn-xs" style="text-align:right; float:right;">删除</a>
