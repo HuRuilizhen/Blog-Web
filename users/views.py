@@ -31,6 +31,11 @@ def home_view(request):
 
 def user_home_view(request, user_id):
     owner_user = User.objects.get(id=user_id)
+    if request.user.is_authenticated:
+        current_user = request.user
+        if owner_user != current_user:
+            owner_user.profile.visit += 1
+            owner_user.profile.save()
     profile = owner_user.profile
     rank = get_rank(profile)
     context = {"profile": profile, "rank": rank}
