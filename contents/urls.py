@@ -44,4 +44,9 @@ urlpatterns = [
     ),
     re_path("^add_comment/(?P<blog_id>\d+)/$", add_comment, name="add_comment"),
     re_path("^del_comment/(?P<comment_id>\d+)/$", del_comment, name="del_comment"),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    re_path(
+        "^update_user_number_of_blogs/$",
+        update_user_number_of_blogs,
+        name="update_user_number_of_blogs",
+    ),
+]

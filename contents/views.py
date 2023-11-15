@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import *
 from users.models import *
-from users.views import user_home_view
+from users.views import user_home_view, ranklist_view
 
 
 # Create your views here.
@@ -218,3 +218,14 @@ def del_comment(request, comment_id):
     Comment.objects.get(id=comment_id).delete()
 
     return redirect(f"/detail_blog/{blog_id}/")
+
+
+@login_required
+def update_user_number_of_blogs(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied("sorry you have no permission")
+    users = User.objects.all()
+    for user in users:
+        user.profile.number_of_blogs = Blog.objects.filter(author=user).count()
+        user.profile.save()
+    return ranklist_view(request)
