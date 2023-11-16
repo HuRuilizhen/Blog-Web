@@ -16,8 +16,9 @@ class Blog(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     text_content = RichTextField(config_name="default")
     label = models.ManyToManyField(to=Label)
-    is_hidden = models.BooleanField(default=False)
     visit = models.IntegerField(default=0)
+    is_hidden = models.BooleanField(default=False)
+    is_delete = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
@@ -28,6 +29,7 @@ class Announcement(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
     text_content = RichTextField(config_name="default")
+    is_delete = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
@@ -39,6 +41,7 @@ class Comment(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     content = RichTextField(config_name="comment")
     is_hidden = models.BooleanField(default=False)
+    is_delete = models.BooleanField(default=False)
 
     def __str__(self):
         return self.content

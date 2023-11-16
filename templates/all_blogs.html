@@ -15,19 +15,17 @@
 {% block content %}
   <ul class="list-unstyled">
     {% for blog in blogs %}
-      {% if not blog.is_hidden %}
-        {% if keyword in blog.title or keyword in blog.author.username %}
-          <li class="panel panel-default">
-            <div class="panel-body">
-              <h4><a href="{% url 'contents:detail_blog' blog.id %}" style="text-decoration: none; color: black;"><b>{{ blog.title }}</b></a></h4>
-              <div>
-                <a href="{% url 'contents:blog_user_home' blog.id %}" style="text-decoration: none; color: black;"><img src="{{ blog.author.profile.user_photo_url }}" width="30" height="30" class="img-rounded" /></a>&nbsp;
-                <a href="{% url 'contents:blog_user_home' blog.id %}" style="text-decoration: none; color: black;"><b>{{ blog.author }}</b></a>
-                &nbsp; | &nbsp; <b>{{ blog.date_added }}</b>
-              </div>
+      {% if keyword in blog.title or keyword in blog.author.username %}
+        <li class="panel panel-default">
+          <div class="panel-body">
+            <h4><a href="{% url 'contents:detail_blog' blog.id %}" style="text-decoration: none; color: black;"><b>{{ blog.title }}</b></a></h4>
+            <div>
+              <a href="{% url 'contents:blog_user_home' blog.id %}" style="text-decoration: none; color: black;"><img src="{{ blog.author.profile.user_photo_url }}" width="30" height="30" class="img-rounded" /></a>&nbsp;
+              <a href="{% url 'contents:blog_user_home' blog.id %}" style="text-decoration: none; color: black;"><b>{{ blog.author }}</b></a>
+              &nbsp; | &nbsp; <b>{{ blog.date_added }}</b>
             </div>
-          </li>
-        {% endif %}
+          </div>
+        </li>
       {% endif %}
       {% empty %}
       <li>目前还没有博客</li>

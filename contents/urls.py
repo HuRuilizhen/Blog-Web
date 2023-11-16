@@ -49,4 +49,39 @@ urlpatterns = [
         update_user_number_of_blogs,
         name="update_user_number_of_blogs",
     ),
+    re_path(
+        "^recover_all_user_blogs/$",
+        recover_all_user_blogs,
+        name="recover_all_user_blogs",
+    ),
+    re_path(
+        "^recover_user_blogs/(?P<user_id>\d+)/$",
+        recover_user_blogs,
+        name="recover_user_blogs",
+    ),
+    re_path(
+        "^recover_blog/(?P<blog_id>\d+)/$",
+        recover_blog,
+        name="recover_blog",
+    ),
+    re_path(
+        "^recover_blog_comment/(?P<blog_id>\d+)/$",
+        recover_blog_comment,
+        name="recover_blog_comment",
+    ),
+    re_path(
+        "^recover_comment/(?P<comment_id>\d+)/$",
+        recover_comment,
+        name="recover_comment",
+    ),
+    re_path(
+        "^recover_all_announcements/$",
+        recover_all_announcements,
+        name="recover_all_announcements",
+    ),
+    re_path(
+        "^recover_announcement/(?P<announcement_id>\d+)/$",
+        recover_announcement,
+        name="recover_announcement",
+    ),
 ]

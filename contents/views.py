@@ -28,7 +28,7 @@ def announcement_user_home_view(request, announcement_id):
 @login_required
 def personal_blogs(request):
     user = request.user
-    blogs = user.blog_set.order_by("-date_added")
+    blogs = user.blog_set.filter(is_delete=False).order_by("-date_added")
     context = {"blogs": blogs, "keyword": ""}
 
     if request.method == "POST":
@@ -38,7 +38,9 @@ def personal_blogs(request):
 
 
 def all_blogs(request):
-    blogs = Blog.objects.order_by("-date_added")
+    blogs = Blog.objects.filter(is_delete=False, is_hidden=False).order_by(
+        "-date_added"
+    )
     context = {"blogs": blogs, "keyword": ""}
 
     if request.method == "POST":
@@ -49,11 +51,16 @@ def all_blogs(request):
 
 def detail_blog(request, blog_id):
     blog = Blog.objects.get(id=blog_id)
-    comments = blog.comment_set.order_by("date_added")
-    commentform = CommentForm()
-    context = {"blog": blog, "comments": comments, "commentform": commentform}
     owner_user = blog.author
     visit_user = request.user
+
+    if owner_user != visit_user and blog.is_hidden:
+        raise PermissionDenied("sorry you have no permission")
+
+    comments = blog.comment_set.filter(is_delete=False).order_by("date_added")
+    commentform = CommentForm()
+    context = {"blog": blog, "comments": comments, "commentform": commentform}
+
     if owner_user != visit_user:
         profile = owner_user.profile
         profile.visit += 1
@@ -102,11 +109,14 @@ def edit_blog(request, blog_id):
 @login_required
 def hid_blog(request, blog_id):
     user = Blog.objects.get(id=blog_id).author
+
     if request.user != user:
         raise PermissionDenied("sorry you have no permission")
+
     blog = Blog.objects.get(id=blog_id)
     blog.is_hidden = True
     blog.save()
+
     return HttpResponseRedirect(reverse("contents:all_blogs"))
 
 
@@ -126,20 +136,29 @@ def del_blog(request, blog_id):
     user = Blog.objects.get(id=blog_id).author
     if request.user != user:
         raise PermissionDenied("sorry you have no permission")
-    Blog.objects.get(id=blog_id).delete()
+
+    blog = Blog.objects.get(id=blog_id)
+    blog.is_delete = True
+    blog.save()
+
     user.profile.number_of_blogs -= 1
     user.profile.save()
+
     return HttpResponseRedirect(reverse("contents:personal_blogs"))
 
 
 def all_announcements(request):
-    announcements = Announcement.objects.order_by("-date_added")
+    announcements = Announcement.objects.filter(is_delete=False).order_by("-date_added")
     context = {"announcements": announcements}
     return render(request, "all_announcements.html", context)
 
 
 def detail_announcement(request, announcement_id):
     announcement = Announcement.objects.get(id=announcement_id)
+
+    if announcement.is_delete == True:
+        raise PermissionDenied("sorry you have no permission")
+
     context = {"announcement": announcement}
     return render(request, "detail_announcement.html", context)
 
@@ -186,7 +205,11 @@ def edit_announcement(request, announcement_id):
 def del_announcement(request, announcement_id):
     if not request.user.is_superuser:
         raise PermissionDenied("sorry you have no permission")
-    Announcement.objects.get(id=announcement_id).delete()
+
+    announcement = Announcement.objects.get(id=announcement_id)
+    announcement.is_delete = True
+    announcement.save()
+
     return HttpResponseRedirect(reverse("contents:all_announcements"))
 
 
@@ -215,7 +238,10 @@ def del_comment(request, comment_id):
 
     if request.user != comment_user and request.user != blog_user:
         raise PermissionDenied("sorry you have no permission")
-    Comment.objects.get(id=comment_id).delete()
+
+    comment = Comment.objects.get(id=comment_id)
+    comment.is_delete = True
+    comment.save()
 
     return redirect(f"/detail_blog/{blog_id}/")
 
@@ -228,4 +254,107 @@ def update_user_number_of_blogs(request):
     for user in users:
         user.profile.number_of_blogs = Blog.objects.filter(author=user).count()
         user.profile.save()
-    return ranklist_view(request)
+    return HttpResponseRedirect(reverse("users:ranklist"))
+
+
+@login_required
+def recover_all_user_blogs(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied("sorry you have no permission")
+
+    blogs = Blog.objects.filter(is_delete=True)
+    for blog in blogs:
+        blog.is_delete = False
+        blog.save()
+        blog.author.profile.number_of_blogs += 1
+        blog.author.profile.save()
+
+    return HttpResponseRedirect(reverse("contents:all_blogs"))
+
+
+@login_required
+def recover_user_blogs(request, user_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied("sorry you have no permission")
+
+    owner_user = User.objects.get(id=user_id)
+
+    blogs = Blog.objects.filter(is_delete=True, author=owner_user)
+    for blog in blogs:
+        blog.is_delete = False
+        blog.save()
+        owner_user.profile.number_of_blogs += 1
+        owner_user.profile.save()
+
+    return HttpResponseRedirect(reverse("contents:all_blogs"))
+
+
+@login_required
+def recover_blog(request, blog_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied("sorry you have no permission")
+
+    blog = Blog.objects.get(id=blog_id)
+    owner_user = blog.author
+
+    blog.is_delete = False
+    blog.save()
+
+    owner_user.profile.number_of_blogs += 1
+    owner_user.profile.save()
+
+    return HttpResponseRedirect(reverse("contents:all_blogs"))
+
+
+@login_required
+def recover_blog_comment(request, blog_id):
+    blog = Blog.objects.get(id=blog_id)
+
+    if not (request.user.is_superuser or request.user != blog.author):
+        raise PermissionDenied("sorry you have no permission")
+
+    comments = blog.comment_set.filter(is_delete=True)
+    for comment in comments:
+        comment.is_delete = False
+        comment.save()
+
+    return HttpResponseRedirect(reverse("contents:detail_blog", args=(blog_id,)))
+
+
+@login_required
+def recover_comment(request, comment_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied("sorry you have no permission")
+
+    comment = Comment.objects.get(id=comment_id)
+    comment.is_delete = False
+    comment.save()
+
+    blog_id = comment.blog.id
+
+    return HttpResponseRedirect(reverse("contents:detail_blog", args=(blog_id,)))
+
+
+@login_required
+def recover_all_announcements(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied("sorry you have no permission")
+
+    announcements = Announcement.objects.filter(is_delete=True)
+    for announcement in announcements:
+        announcement.is_delete = False
+        announcement.save()
+
+    return HttpResponseRedirect(reverse("contents:all_announcements"))
+
+
+@login_required
+def recover_announcement(request, announcement_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied("sorry you have no permission")
+
+    announcement = Announcement.objects.get(id=announcement_id)
+    announcement.is_delete = False
+    announcement.save()
+
+    return HttpResponseRedirect(reverse("contents:all_announcements"))
