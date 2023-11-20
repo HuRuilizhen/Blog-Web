@@ -29,9 +29,9 @@
           <td>{{ profile.visit }}</td>
           <td>{{ profile.number_of_blogs }}</td>
           <td>
-            <form action="{% url 'contents:all_blogs' %}" method="post">
+            <form action="{% url 'contents:all_blogs' %}" method="get">
               {% csrf_token %}
-              <input type="hidden" name="keyword" value="{{ profile.user.username }}" />
+              <input type="hidden" name="author" value="{{ profile.user.username }}" />
               <input type="submit" value="传送" />
             </form>
           </td>

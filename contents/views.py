@@ -3,10 +3,13 @@ from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from django.core.paginator import Paginator
 from .models import *
 from .forms import *
 from users.models import *
 from users.views import user_home_view, ranklist_view
+from Blogs.settings import BLOGS_PER_PAGE
 
 
 # Create your views here.
@@ -28,23 +31,85 @@ def announcement_user_home_view(request, announcement_id):
 @login_required
 def personal_blogs(request):
     user = request.user
-    blogs = user.blog_set.filter(is_delete=False).order_by("-date_added")
-    context = {"blogs": blogs, "keyword": ""}
+    blogs = user.blog_set.filter(is_delete=False)
 
-    if request.method == "POST":
-        context["keyword"] = request.POST.get("keyword")
+    keyword = request.GET.get("keyword")
+    if keyword:
+        print(keyword)
+        blogs = blogs.filter(title__contains=keyword)
+    else:
+        keyword = ""
+
+    blogs = blogs.order_by("-date_added")
+
+    pages = Paginator(blogs, BLOGS_PER_PAGE)
+    pagenum = request.GET.get("pagenum")
+
+    try:
+        pagenum = int(pagenum)
+    except Exception:
+        pagenum = 1
+
+    if pagenum not in pages.page_range:
+        pagenum = 1
+
+    pagelist = pages.page_range[
+        max(pagenum - 3, 1) - 1 : min(pages.num_pages, pagenum + 3)
+    ]
+
+    blogs = pages.page(pagenum)
+    context = {
+        "blogs": blogs,
+        "keyword": keyword,
+        "pagenum": pagenum,
+        "pagelist": pagelist,
+    }
 
     return render(request, "personal_blogs.html", context)
 
 
 def all_blogs(request):
-    blogs = Blog.objects.filter(is_delete=False, is_hidden=False).order_by(
-        "-date_added"
+    blogs = Blog.objects.filter(
+        is_delete=False,
+        is_hidden=False,
     )
-    context = {"blogs": blogs, "keyword": ""}
 
-    if request.method == "POST":
-        context["keyword"] = request.POST.get("keyword")
+    author = request.GET.get("author")
+    if author:
+        blogs = blogs.filter(author__username__contains=author)
+    else:
+        author = ""
+
+    keyword = request.GET.get("keyword")
+    if keyword:
+        blogs = blogs.filter(
+            Q(title__contains=keyword) | Q(author__username__contains=keyword)
+        )
+    else:
+        keyword = ""
+
+    blogs = blogs.order_by("-date_added")
+
+    pages = Paginator(blogs, BLOGS_PER_PAGE)
+    pagenum = request.GET.get("pagenum")
+    try:
+        pagenum = int(pagenum)
+    except Exception:
+        pagenum = 1
+    if pagenum not in pages.page_range:
+        pagenum = 1
+    pagelist = pages.page_range[
+        max(pagenum - 3, 1) - 1 : min(pages.num_pages, pagenum + 3)
+    ]
+
+    blogs = pages.page(pagenum)
+    context = {
+        "blogs": blogs,
+        "keyword": keyword,
+        "author": author,
+        "pagenum": pagenum,
+        "pagelist": pagelist,
+    }
 
     return render(request, "all_blogs.html", context)
 

@@ -3,10 +3,11 @@
 {% block header %}
   <h3 style="display: inline;">公开博客</h3>
   <a class="btn btn-default" href="{% url 'contents:add_blog' %}">添加博客</a>
-  <form action="{% url 'contents:all_blogs' %}" method="post" style="text-align: right; float: right;">
+  <form action="{% url 'contents:all_blogs' %}" method="get" style="text-align: right; float: right;">
     {% csrf_token %}
     <div class="input-group">
-      <input type="text" name="keyword" />
+      <input type="hidden" name="author" value="{{ author }}" />
+      <input type="text" name="keyword" value="{{ keyword }}" />
       <span><input type="submit" value="搜索" /></span>
     </div>
   </form>
@@ -15,20 +16,39 @@
 {% block content %}
   <ul class="list-unstyled">
     {% for blog in blogs %}
-      {% if keyword in blog.title or keyword in blog.author.username %}
-        <li class="panel panel-default">
-          <div class="panel-body">
-            <h4><a href="{% url 'contents:detail_blog' blog.id %}" style="text-decoration: none; color: black;"><b>{{ blog.title }}</b></a></h4>
-            <div>
-              <a href="{% url 'contents:blog_user_home' blog.id %}" style="text-decoration: none; color: black;"><img src="{{ blog.author.profile.user_photo_url }}" width="30" height="30" class="img-rounded" /></a>&nbsp;
-              <a href="{% url 'contents:blog_user_home' blog.id %}" style="text-decoration: none; color: black;"><b>{{ blog.author }}</b></a>
-              &nbsp; | &nbsp; <b>{{ blog.date_added }}</b>
-            </div>
+      <li class="panel panel-default">
+        <div class="panel-body">
+          <h4><a href="{% url 'contents:detail_blog' blog.id %}" style="text-decoration: none; color: black;"><b>{{ blog.title }}</b></a></h4>
+          <div>
+            <a href="{% url 'contents:blog_user_home' blog.id %}" style="text-decoration: none; color: black;"><img src="{{ blog.author.profile.user_photo_url }}" width="30" height="30" class="img-rounded" /></a>&nbsp;
+            <a href="{% url 'contents:blog_user_home' blog.id %}" style="text-decoration: none; color: black;"><b>{{ blog.author }}</b></a>
+            &nbsp; | &nbsp; <b>{{ blog.date_added }}</b>
           </div>
-        </li>
-      {% endif %}
+        </div>
+      </li>
       {% empty %}
-      <li>目前还没有博客</li>
+      <li>还没有相关博客被添加</li>
     {% endfor %}
   </ul>
+
+  <br />
+  <br />
+
+  <div class="btn-toolbar" role="toolbar">
+    <div class="btn-group">
+      {% for page in pagelist %}
+        <form action="{% url 'contents:all_blogs' %}" method="get" style="float: left;">
+          {% csrf_token %}
+          <input type="hidden" name="author" value="{{ author }}" />
+          <input type="hidden" name="keyword" value="{{ keyword }}" />
+          <input type="hidden" name="pagenum" value="{{ page }}" />
+          {% if page == pagenum %}
+            <input class="btn btn-primary" type="submit" value="{{ page }}" />
+          {% else %}
+            <input class="btn btn-default" type="submit" value="{{ page }}" />
+          {% endif %}
+        </form>
+      {% endfor %}
+    </div>
+  </div>
 {% endblock %}
