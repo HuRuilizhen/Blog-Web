@@ -7,6 +7,8 @@ from .models import *
 from .forms import *
 from django.db.models import F, Window
 from django.db.models.functions import Rank
+from django.core.paginator import Paginator
+from Blogs.settings import USERS_PER_PAGE
 
 
 def get_rank(profile):
@@ -209,5 +211,27 @@ def edit_profile_password_view(request):
 def ranklist_view(request):
     profiles = Profile.objects.order_by("-score")
     number_of_users = Profile.objects.count()
-    context = {"profiles": profiles, "number_of_users": number_of_users}
+
+    pages = Paginator(profiles, USERS_PER_PAGE)
+    pagenum = request.GET.get("pagenum")
+    try:
+        pagenum = int(pagenum)
+    except Exception:
+        pagenum = 1
+    if pagenum not in pages.page_range:
+        pagenum = 1
+
+    rankbase = (pagenum - 1) * USERS_PER_PAGE
+    pagelist = pages.page_range[
+        max(pagenum - 3, 1) - 1 : min(pages.num_pages, pagenum + 3)
+    ]
+    profiles = pages.page(pagenum)
+
+    context = {
+        "profiles": profiles,
+        "number_of_users": number_of_users,
+        "pagelist": pagelist,
+        "pagenum": pagenum,
+        "rankbase": rankbase,
+    }
     return render(request, "ranklist.html", context=context)

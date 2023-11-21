@@ -22,7 +22,11 @@
           <div>
             <a href="{% url 'contents:blog_user_home' blog.id %}" style="text-decoration: none; color: black;"><img src="{{ blog.author.profile.user_photo_url }}" width="30" height="30" class="img-rounded" /></a>&nbsp;
             <a href="{% url 'contents:blog_user_home' blog.id %}" style="text-decoration: none; color: black;"><b>{{ blog.author }}</b></a>
-            &nbsp; | &nbsp; <b>{{ blog.date_added }}</b>
+            {% if blog.author.is_superuser %}
+              <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user" style="color: rgb(255, 0, 0);"></span> 超级管理</button>
+            {% else %}
+              <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user"></span> 普通用户</button>
+            {% endif %}&nbsp; | &nbsp; <b>{{ blog.date_added }}</b>
           </div>
         </div>
       </li>

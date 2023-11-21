@@ -6,7 +6,15 @@
 
   <div class="list-group list-group-horizontal">
     <small>
-      <a href="{% url 'contents:blog_user_home' blog.id %}" class="list-group-item">作者: <img src="{{ blog.author.profile.user_photo_url }}" width="18" height="18" class="img-rounded" /> {{ blog.author }}</a>
+      <a href="{% url 'contents:blog_user_home' blog.id %}" class="list-group-item">
+        作者: <img src="{{ blog.author.profile.user_photo_url }}" width="18" height="18" class="img-rounded" /> {{ blog.author }}
+
+        {% if blog.author.is_superuser %}
+          <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user" style="color: rgb(255, 0, 0);"></span> 超级管理</button>
+        {% else %}
+          <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user"></span> 普通用户</button>
+        {% endif %}
+      </a>
       <a href="#" class="list-group-item">日期: {{ blog.date_added|date:'Y-m-d H:i:s' }}</a>
       <a href="#" class="list-group-item">浏览量：{{ blog.visit }}</a>
     </small>
@@ -23,7 +31,12 @@
       <div class="panel-footer">
         <small>
           <a href="{% url 'contents:comment_user_home' comment.id %}" style="text-decoration: none; color: black;"><img src="{{ comment.author.profile.user_photo_url }}" width="18" height="18" class="img-rounded" /></a>
-          <a href="{% url 'contents:comment_user_home' comment.id %}" style="text-decoration: none; color: black;">{{ comment.author }}</a> &nbsp; | &nbsp;{{ comment.date_added }}
+          <a href="{% url 'contents:comment_user_home' comment.id %}" style="text-decoration: none; color: black;">{{ comment.author }}</a>
+          {% if comment.author.is_superuser %}
+            <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user" style="color: rgb(255, 0, 0);"></span> 超级管理</button>
+          {% else %}
+            <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user"></span> 普通用户</button>
+          {% endif %}&nbsp; | &nbsp;{{ comment.date_added }}
         </small>
         {% if user.is_authenticated %}
           {% if user == comment.author or user == blog.author %}

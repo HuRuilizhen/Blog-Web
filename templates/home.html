@@ -7,8 +7,16 @@
         <br />
         <h3>
           <img src=" {{ profile.user_photo_url }} " width="70" height="70" class="img-rounded" />
-          &nbsp; {{ user.username }} &nbsp;
+          &nbsp; {{ user.username }}
+
+          {% if user.is_superuser %}
+            <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user" style="color: rgb(255, 0, 0);"></span> 超级管理</button>
+          {% else %}
+            <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user"></span> 普通用户</button>
+          {% endif %}&nbsp;
+
           <a href="{% url 'users:edit_profile' %}" class="btn btn-default btn-xs">修改账户</a>
+          <a href="{% url 'users:user_home' user.id %}" class="btn btn-default btn-xs">访客页面</a>
         </h3><br />
         <small>{{ profile.user_description }}</small>
         <br />

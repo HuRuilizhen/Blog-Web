@@ -8,7 +8,7 @@ from django.core.paginator import Paginator
 from .models import *
 from .forms import *
 from users.models import *
-from users.views import user_home_view, ranklist_view
+from users.views import user_home_view
 from Blogs.settings import BLOGS_PER_PAGE
 
 

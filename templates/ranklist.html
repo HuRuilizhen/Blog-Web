@@ -20,10 +20,15 @@
     <tbody>
       {% for profile in profiles %}
         <tr>
-          <td>{{ forloop.counter }}</td>
+          <td>{{ forloop.counter|add:rankbase }}</td>
           <td>
             <a href="{% url 'users:user_home' profile.user.id %}"><img src="{{ profile.user_photo_url }}" width="40" height="40" class="img-rounded" /></a>
             &nbsp; <a href="{% url 'users:user_home' profile.user.id %}" style="text-decoration: none; color: black;"><b>{{ profile.user.username }}</b></a>
+            {% if profile.user.is_superuser %}
+              <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user" style="color: rgb(255, 0, 0);"></span> 超级管理</button>
+            {% else %}
+              <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user"></span> 普通用户</button>
+            {% endif %}
           </td>
           <td>{{ profile.score }}</td>
           <td>{{ profile.visit }}</td>
@@ -39,4 +44,23 @@
       {% endfor %}
     </tbody>
   </table>
+
+  <br />
+  <br />
+
+  <div class="btn-toolbar" role="toolbar">
+    <div class="btn-group">
+      {% for page in pagelist %}
+        <form action="{% url 'users:ranklist' %}" method="get" style="float: left;">
+          {% csrf_token %}
+          <input type="hidden" name="pagenum" value="{{ page }}" />
+          {% if page == pagenum %}
+            <input class="btn btn-primary" type="submit" value="{{ page }}" />
+          {% else %}
+            <input class="btn btn-default" type="submit" value="{{ page }}" />
+          {% endif %}
+        </form>
+      {% endfor %}
+    </div>
+  </div>
 {% endblock %}
