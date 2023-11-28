@@ -30,8 +30,7 @@
   </head>
 
   <body>
-    <!-- Static navbar -->
-    <nav class="navbar navbar-default navbar-static-top">
+    <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"></button>
@@ -56,14 +55,14 @@
           <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
               <li>
-                <a href="{% url 'contents:personal_blogs' %}">{{ user.username }}的博客</a>
+                <a href="{% url 'contents:personal_blogs' %}"><span class="glyphicon glyphicon-user"></span> {{ user.username }}的博客</a>
               </li>
               <li>
                 <a href="{% url 'users:logout' %}">登出</a>
               </li>
             {% else %}
               <li>
-                <a href="{% url 'users:login' %}">登录</a>
+                <a href="{% url 'users:login' %}"><span class="glyphicon glyphicon-login"></span> 登录</a>
               </li>
               <li>
                 <a href="{% url 'users:signup' %}">注册</a>
@@ -74,7 +73,35 @@
       </div>
     </nav>
 
-    <div class="container">
+    <nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"></button>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="http://skstudying.com/home"><img src="http://skstudying.com/assets/img/logo.a0924d7d.png" width="50" height="25" class="img-rounded" /></a>
+            </li>
+            <li>
+              <a href="https://www.luogu.com.cn/"><img src="https://fecdn.luogu.com.cn/luogu/logo.png?0fdd294ff62e331d2f70e1a37ba4ee02" width="50" height="25" class="img-rounded" /></a>
+            </li>
+            <li>
+              <a href="https://www.acwing.com/problem/"><img src="https://cdn.acwing.com/media/activity/surface/log.png" width="30" height="25" class="img-rounded" /></a>
+            </li>
+            <li>
+              <a href="https://codeforces.com/"><img src="https://codeforces.org/s/81733/images/codeforces-sponsored-by-ton.png" width="80" height="25" class="img-rounded" /></a>
+            </li>
+            <li>
+              <a href="https://oi-wiki.org/"><img src="https://oi-wiki.org/images/wordArt.webp" width="80" height="25" class="img-rounded" /></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container" style="padding-top: 50px; padding-bottom: 60px;">
       <div class="page-header">
         {% block header %}
 

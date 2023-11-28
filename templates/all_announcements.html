@@ -3,7 +3,7 @@
 {% block header %}
   <h3 style="display: inline;">管理通知</h3>
   {% if user.is_superuser %}
-    <a class="btn btn-default" href="{% url 'contents:add_announcement' %}">添加通知</a>
+    &nbsp;<a class="btn btn-default btn-sm" href="{% url 'contents:add_announcement' %}"><span class="glyphicon glyphicon-plus">&nbsp;添加通知</span></a>
   {% endif %}
 {% endblock %}
 
@@ -22,8 +22,8 @@
             </div>
             <div class="list-group list-group-horizontal" style="text-align: right; float: right;">
               {% if user.is_superuser %}
-                <a href="{% url 'contents:edit_announcement' announcement.id %}" class="list-group-item">编辑</a>
-                <a href="{% url 'contents:del_announcement' announcement.id %}" class="list-group-item">删除</a>
+                <a href="{% url 'contents:edit_announcement' announcement.id %}" class="list-group-item btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil">&nbsp;编辑</span></a>
+                <a href="{% url 'contents:del_announcement' announcement.id %}" class="list-group-item btn btn-default btn-sm"><span class="glyphicon glyphicon-trash">&nbsp;删除</span></a>
               {% endif %}
             </div>
           </div>

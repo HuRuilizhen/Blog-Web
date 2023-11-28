@@ -2,12 +2,12 @@
 
 {% block header %}
   <h3 style="display: inline;">个人博客</h3>
-  <a class="btn btn-default" href="{% url 'contents:add_blog' %}">添加博客</a>
+  &nbsp;<a class="btn btn-default btn-sm" href="{% url 'contents:add_blog' %}"><span class="glyphicon glyphicon-plus">&nbsp;添加博客</span></a>
   <form action="{% url 'contents:personal_blogs' %}" method="get" style="text-align: right; float: right;">
     {% csrf_token %}
     <div class="input-group">
       <input type="text" name="keyword" />
-      <span><input type="submit" value="搜索" /></span>
+      <button type="submit" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-search"></span></button>
     </div>
   </form>
 {% endblock %}
@@ -22,13 +22,13 @@
             <b>{{ blog.date_added }}</b>
           </div>
           <div class="list-group list-group-horizontal" style="text-align:right; float: right;">
-            <a href="{% url 'contents:edit_blog' blog.id %}" class="list-group-item">编辑</a>
+            <a href="{% url 'contents:edit_blog' blog.id %}" class="list-group-item btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil">&nbsp;编辑</span></a>
             {% if blog.is_hidden %}
-              <a href="{% url 'contents:display_blog' blog.id %}" class="list-group-item">展示</a>
+              <a href="{% url 'contents:display_blog' blog.id %}" class="list-group-item btn btn-default btn-sm"><span class="glyphicon glyphicon-ok-circle">&nbsp;展示</span></a>
             {% else %}
-              <a href="{% url 'contents:hid_blog' blog.id %}" class="list-group-item">隐藏</a>
+              <a href="{% url 'contents:hid_blog' blog.id %}" class="list-group-item btn btn-default btn-sm"><span class="glyphicon glyphicon-remove-circle">&nbsp;隐藏</span></a>
             {% endif %}
-            <a href="{% url 'contents:del_blog' blog.id %}" class="list-group-item">删除</a>
+            <a href="{% url 'contents:del_blog' blog.id %}" class="list-group-item btn btn-default btn-sm"><span class="glyphicon glyphicon-trash">&nbsp;删除</span></a>
           </div>
         </div>
       </li>
