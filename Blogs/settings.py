@@ -131,6 +131,7 @@ CKEDITOR_CONFIGS = {
     "default": {
         "width": "100%",
         "tabSpaces": 4,
+        "mathJaxLib": "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML",
         "toolbar": "Custom",
         "toolbar_Custom": [
             ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript"],
@@ -156,17 +157,19 @@ CKEDITOR_CONFIGS = {
                 "SpecialChar",
                 "Blockquote",
                 "CodeSnippet",
+                "Mathjax",
                 "-",
                 "Markdown",
             ],
             ["Styles", "Format", "Font", "FontSize"],
         ],
-        "extraPlugins": ",".join(["codesnippet", "markdown"]),
+        "extraPlugins": ",".join(["codesnippet", "markdown", "mathjax"]),
     },
     "comment": {
         "width": "1100px",
         "height": "50px",
         "tabSpaces": 4,
+        "mathJaxLib": "//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML",
         "toolbar": "Custom",
         "toolbar_Custom": [
             ["Bold", "Italic", "Underline"],
@@ -177,7 +180,12 @@ CKEDITOR_CONFIGS = {
                 "Smiley",
                 "SpecialChar",
             ],
+            [
+                "CodeSnippet",
+                "Mathjax",
+            ],
         ],
+        "extraPlugins": ",".join(["codesnippet", "markdown", "mathjax"]),
     },
 }
 
