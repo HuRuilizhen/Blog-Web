@@ -74,14 +74,14 @@
                 <a href="{% url 'contents:personal_blogs' %}"><span class="glyphicon glyphicon-user"></span> {{ user.username }}的博客</a>
               </li>
               <li>
-                <a href="{% url 'users:logout' %}">登出</a>
+                <a href="{% url 'users:logout' %}"><span class="glyphicon glyphicon-log-out"></span>登出</a>
               </li>
             {% else %}
               <li>
-                <a href="{% url 'users:login' %}"><span class="glyphicon glyphicon-login"></span> 登录</a>
+                <a href="{% url 'users:login' %}"><span class="glyphicon glyphicon-log-in"></span> 登录</a>
               </li>
               <li>
-                <a href="{% url 'users:signup' %}">注册</a>
+                <a href="{% url 'users:signup' %}"><span class="glyphicon glyphicon-flag">Flag</span>注册</a>
               </li>
             {% endif %}
           </ul>

@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.core.exceptions import PermissionDenied
 from django.contrib.auth import login
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -8,7 +9,7 @@ from .forms import *
 from django.db.models import F, Window
 from django.db.models.functions import Rank
 from django.core.paginator import Paginator
-from Blogs.settings import USERS_PER_PAGE
+from Blogs.settings import USERS_PER_PAGE, SIGNUP_ALLOWED
 
 
 def get_rank(profile):
@@ -33,6 +34,8 @@ def home_view(request):
 
 def user_home_view(request, user_id):
     owner_user = User.objects.get(id=user_id)
+    if not owner_user.profile.active:
+        raise PermissionDenied("sorry user is not active")
     if request.user.is_authenticated:
         current_user = request.user
         if owner_user != current_user:
@@ -55,7 +58,7 @@ def login_view(request):
             username = form.cleaned_data["username"]
             password = form.cleaned_data["password"]
             user = authenticate(request, username=username, password=password)
-            if user is not None:
+            if user is not None and user.profile.active:
                 login(request, user)
                 url = reverse("contents:personal_blogs")
                 return redirect(url)
@@ -74,9 +77,16 @@ def signup_view(request):
         form = SignupForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
 
-            Profile.objects.create(user=user, sex_type=request.POST.get("sex_type"))
+            if SIGNUP_ALLOWED:
+                login(request, user)
+                profile = Profile.objects.create(
+                    user=user, sex_type=request.POST.get("sex_type")
+                )
+            else:
+                profile = Profile.objects.create(
+                    user=user, sex_type=request.POST.get("sex_type"), active=False
+                )
 
             url = reverse("users:home")
             return redirect(url)
@@ -208,8 +218,78 @@ def edit_profile_password_view(request):
     return render(request, "edit_profile.html", context)
 
 
+@login_required
+def activate_user_view(request, user_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied("sorry you have no permission")
+
+    user = User.objects.get(id=user_id)
+    profile = user.profile
+
+    profile.active = True
+    profile.save()
+
+    return ranklist_view(request)
+
+
+@login_required
+def activate_user_view(request, user_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied("sorry you have no permission")
+
+    user = User.objects.get(id=user_id)
+    profile = user.profile
+
+    profile.active = True
+    profile.save()
+
+    return ranklist_view(request)
+
+
+@login_required
+def activate_all_users_view(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied("sorry you have no permission")
+
+    profiles = Profile.objects.filter(active=False)
+    for profile in profiles:
+        profile.active = True
+        profile.save()
+
+    return ranklist_view(request)
+
+
+@login_required
+def clean_unactive_user_view(request, user_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied("sorry you have no permission")
+
+    user = User.objects.get(id=user_id)
+    profile = user.profile
+
+    if not profile.active:
+        profile.delete()
+        user.delete()
+
+    return ranklist_view(request)
+
+
+@login_required
+def clean_all_unactive_users_view(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied("sorry you have no permission")
+
+    profiles = Profile.objects.filter(active=False)
+    for profile in profiles:
+        user = profile.user
+        profile.delete()
+        user.delete()
+
+    return ranklist_view(request)
+
+
 def ranklist_view(request):
-    profiles = Profile.objects.order_by("-score")
+    profiles = Profile.objects.filter(active=True).order_by("-score")
     number_of_users = Profile.objects.count()
 
     pages = Paginator(profiles, USERS_PER_PAGE)

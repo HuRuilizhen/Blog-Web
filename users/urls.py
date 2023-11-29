@@ -30,5 +30,19 @@ urlpatterns = [
         edit_profile_password_view,
         name="edit_profile_password",
     ),
+    re_path(
+        "^activate_user/(?P<user_id>\d+)/$", activate_user_view, name="activate_user"
+    ),
+    path("activate_all_user/", activate_all_users_view, name="activate_all_users"),
+    re_path(
+        "^clean_unactive_user/(?P<user_id>\d+)/$",
+        clean_unactive_user_view,
+        name="clean_unactive_user",
+    ),
+    path(
+        "clean_all_unactive_users/",
+        clean_all_unactive_users_view,
+        name="clean_all_unactive_users",
+    ),
     path("ranklist/", ranklist_view, name="ranklist"),
 ]

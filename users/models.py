@@ -18,6 +18,7 @@ class Profile(models.Model):
     score = models.IntegerField(default=0)
     number_of_blogs = models.IntegerField(default=0)
     visit = models.IntegerField(default=0)
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return str(self.user.username)
