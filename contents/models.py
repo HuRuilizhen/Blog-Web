@@ -19,6 +19,7 @@ class Blog(models.Model):
     visit = models.IntegerField(default=0)
     is_hidden = models.BooleanField(default=False)
     is_delete = models.BooleanField(default=False)
+    is_on_personal_page = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

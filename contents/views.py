@@ -197,6 +197,28 @@ def display_blog(request, blog_id):
 
 
 @login_required
+def hid_blog_on_personal_page(request, blog_id):
+    user = Blog.objects.get(id=blog_id).author
+    if request.user != user:
+        raise PermissionDenied("sorry you have no permission")
+    blog = Blog.objects.get(id=blog_id)
+    blog.is_on_personal_page = False
+    blog.save()
+    return user_home_view(request, user_id=user.id)
+
+
+@login_required
+def display_blog_on_personal_page(request, blog_id):
+    user = Blog.objects.get(id=blog_id).author
+    if request.user != user:
+        raise PermissionDenied("sorry you have no permission")
+    blog = Blog.objects.get(id=blog_id)
+    blog.is_on_personal_page = True
+    blog.save()
+    return user_home_view(request, user_id=user.id)
+
+
+@login_required
 def del_blog(request, blog_id):
     user = Blog.objects.get(id=blog_id).author
     if request.user != user:

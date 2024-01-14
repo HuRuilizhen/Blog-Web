@@ -2,40 +2,75 @@
 
 {% block header %}
   <div class="jumbotron">
-    {% if user.is_authenticated %}
-      <div style="display: inline-block;">
-        <br />
-        <h3>
-          <img src=" {{ profile.user_photo_url }} " width="70" height="70" class="img-rounded" />
-          &nbsp; {{ profile.user.username }}
-          {% if profile.user.is_superuser %}
-            <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user" style="color: rgb(255, 0, 0);"></span> 超级管理</button>
-          {% else %}
-            <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user"></span> 普通用户</button>
-          {% endif %}
-        </h3><br />
-        <small>{{ profile.user_description }}</small>
-        <br />
-      </div>
+    <div style="display: inline-block;">
+      <br />
+      <h3>
+        <img src=" {{ profile.user_photo_url }} " width="70" height="70" class="img-rounded" />
+        &nbsp; {{ profile.user.username }}
+        {% if profile.user.is_superuser %}
+          <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user" style="color: rgb(255, 0, 0);"></span> 超级管理</button>
+        {% else %}
+          <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user"></span> 普通用户</button>
+        {% endif %}
+        <a href="{% url 'users:home' %}" class="btn btn-default btn-xs">返回个人主页</a>
+      </h3><br />
+      <small>{{ profile.user_description }}</small>
+      <br />
+    </div>
 
-      <ul class="list-group" style="text-align: right; float: right;">
-        <small>
-          <li class="list-group-item">博客总数 {{ profile.number_of_blogs }}</li>
-          <li class="list-group-item">浏览总量 {{ profile.visit }}</li>
-          <li class="list-group-item">当前积分 {{ profile.score }}</li>
-          <li class="list-group-item">本站排名 {{ rank }}</li>
-        </small>
-      </ul>
-    {% else %}
-      <h3>在查看个人主页之前请先 <a href="{% url 'users:login' %}">登录</a></h3>
-    {% endif %}
+    <ul class="list-group" style="text-align: right; float: right;">
+      <small>
+        <li class="list-group-item">博客总数 {{ profile.number_of_blogs }}</li>
+        <li class="list-group-item">浏览总量 {{ profile.visit }}</li>
+        <li class="list-group-item">当前积分 {{ profile.score }}</li>
+        <li class="list-group-item">本站排名 {{ rank }}</li>
+      </small>
+    </ul>
   </div>
 {% endblock %}
 
 {% block content %}
-  {% if user.is_authenticated %}
-    <div class="panel panel-default">
-      <div class="panel-body">{{ profile.personal_homepage|safe }}</div>
-    </div>
-  {% endif %}
+  <div class="panel panel-default">
+    <div class="panel-body">{{ profile.personal_homepage|safe }}</div>
+  </div>
+
+  <hr />
+
+  <ul class="list-unstyled">
+    {% for blog in blogs %}
+      <li class="panel panel-default">
+        <div class="panel-body">
+          <div style="text-align:left;  float: left;">
+            <h4><a href="{% url 'contents:detail_blog' blog.id %}" style="text-decoration: none; color: black;"><b>{{ blog.title }}</b></a></h4>
+            <a href="{% url 'contents:blog_user_home' blog.id %}" style="text-decoration: none; color: black;"><img src="{{ blog.author.profile.user_photo_url }}" width="30" height="30" class="img-rounded" /></a>&nbsp;
+            <a href="{% url 'contents:blog_user_home' blog.id %}" style="text-decoration: none; color: black;"><b>{{ blog.author }}</b></a>
+            {% if blog.author.is_superuser %}
+              <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user" style="color: rgb(255, 0, 0);"></span> 超级管理</button>
+            {% else %}
+              <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user"></span> 普通用户</button>
+            {% endif %}&nbsp; | &nbsp; <b>{{ blog.date_added }}</b>
+          </div>
+          {% if user == blog.author %}
+            <div class="list-group list-group-horizontal" style="text-align:right; float: right;">
+              <a href="{% url 'contents:edit_blog' blog.id %}" class="list-group-item btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil">&nbsp;编辑</span></a>
+              {% if blog.is_hidden %}
+                <a href="{% url 'contents:display_blog' blog.id %}" class="list-group-item btn btn-default btn-sm"><span class="glyphicon glyphicon-ok-circle">&nbsp;公开</span></a>
+              {% else %}
+                <a href="{% url 'contents:hid_blog' blog.id %}" class="list-group-item btn btn-default btn-sm"><span class="glyphicon glyphicon-remove-circle">&nbsp;私人</span></a>
+              {% endif %}
+              {% if not blog.is_on_personal_page %}
+                <a href="{% url 'contents:display_blog_on_personal_page' blog.id %}" class="list-group-item btn btn-default btn-sm"><span class="glyphicon glyphicon-ok-circle">&nbsp;展示</span></a>
+              {% else %}
+                <a href="{% url 'contents:hid_blog_on_personal_page' blog.id %}" class="list-group-item btn btn-default btn-sm"><span class="glyphicon glyphicon-remove-circle">&nbsp;隐藏</span></a>
+              {% endif %}
+              <a href="{% url 'contents:del_blog' blog.id %}" class="list-group-item btn btn-default btn-sm"><span class="glyphicon glyphicon-trash">&nbsp;删除</span></a>
+            </div>
+          {% endif %}
+        </div>
+      </li>
+
+      {% empty %}
+      <li>还没有相关博客被展示在主页</li>
+    {% endfor %}
+  </ul>
 {% endblock %}

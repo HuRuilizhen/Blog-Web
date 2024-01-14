@@ -4,6 +4,8 @@ from django.contrib.auth import login
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+
+from contents.models import Blog
 from .models import *
 from .forms import *
 from django.db.models import F, Window
@@ -26,7 +28,10 @@ def home_view(request):
         current_user = request.user
         profile = current_user.profile
         rank = get_rank(profile)
-        context = {"profile": profile, "rank": rank}
+        blogs = Blog.objects.filter(
+            is_delete=False, is_on_personal_page=True, author=current_user
+        )
+        context = {"profile": profile, "rank": rank, "blogs": blogs}
         return render(request, "home.html", context)
     else:
         return render(request, "home.html")
@@ -43,7 +48,10 @@ def user_home_view(request, user_id):
             owner_user.profile.save()
     profile = owner_user.profile
     rank = get_rank(profile)
-    context = {"profile": profile, "rank": rank}
+    blogs = Blog.objects.filter(
+        is_delete=False, is_on_personal_page=True, author=owner_user
+    )
+    context = {"profile": profile, "rank": rank, "blogs": blogs}
     return render(request, "user_home.html", context)
 
 

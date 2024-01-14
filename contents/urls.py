@@ -24,6 +24,16 @@ urlpatterns = [
     re_path("^edit_blog/(?P<blog_id>\d+)/$", edit_blog, name="edit_blog"),
     re_path("^hid_blog/(?P<blog_id>\d+)/$", hid_blog, name="hid_blog"),
     re_path("^display_blog/(?P<blog_id>\d+)/$", display_blog, name="display_blog"),
+    re_path(
+        "^hid_blog_on_personal_page/(?P<blog_id>\d+)/$",
+        hid_blog_on_personal_page,
+        name="hid_blog_on_personal_page",
+    ),
+    re_path(
+        "^display_blog_on_personal_page/(?P<blog_id>\d+)/$",
+        display_blog_on_personal_page,
+        name="display_blog_on_personal_page",
+    ),
     re_path("^del_blog/(?P<blog_id>\d+)/$", del_blog, name="del_blog"),
     re_path("^all_announcements/$", all_announcements, name="all_announcements"),
     re_path(
