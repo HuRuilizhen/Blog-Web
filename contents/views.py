@@ -88,7 +88,7 @@ def all_blogs(request):
     else:
         keyword = ""
 
-    blogs = blogs.order_by("-date_added")
+    blogs = blogs.order_by("-is_top", "-date_added")
 
     pages = Paginator(blogs, BLOGS_PER_PAGE)
     pagenum = request.GET.get("pagenum")
@@ -169,6 +169,34 @@ def edit_blog(request, blog_id):
         return HttpResponseRedirect(reverse("contents:all_blogs"))
     context = {"blog": blog, "blogform": blogform}
     return render(request, "edit_blog.html", context)
+
+
+@login_required
+def set_top_blog(request, blog_id):
+    user = request.user
+
+    if not user.is_superuser:
+        raise PermissionDenied("sorry you have no permission")
+
+    blog = Blog.objects.get(id=blog_id)
+    blog.is_top = True
+    blog.save()
+
+    return HttpResponseRedirect(reverse("contents:all_blogs"))
+
+
+@login_required
+def unset_top_blog(request, blog_id):
+    user = request.user
+
+    if not user.is_superuser:
+        raise PermissionDenied("sorry you have no permission")
+
+    blog = Blog.objects.get(id=blog_id)
+    blog.is_top = False
+    blog.save()
+
+    return HttpResponseRedirect(reverse("contents:all_blogs"))
 
 
 @login_required

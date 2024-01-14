@@ -18,8 +18,12 @@
     {% for blog in blogs %}
       <li class="panel panel-default">
         <div class="panel-body">
-          <h4><a href="{% url 'contents:detail_blog' blog.id %}" style="text-decoration: none; color: black;"><b>{{ blog.title }}</b></a></h4>
-          <div>
+          <div style="text-align:left;  float: left;">
+            {% if blog.is_top %}
+              <h4><a href="{% url 'contents:detail_blog' blog.id %}" style="text-decoration: none; color: red;"><b>{{ blog.title }}</b></a></h4>
+            {% else %}
+              <h4><a href="{% url 'contents:detail_blog' blog.id %}" style="text-decoration: none; color: black;"><b>{{ blog.title }}</b></a></h4>
+            {% endif %}
             <a href="{% url 'contents:blog_user_home' blog.id %}" style="text-decoration: none; color: black;"><img src="{{ blog.author.profile.user_photo_url }}" width="30" height="30" class="img-rounded" /></a>&nbsp;
             <a href="{% url 'contents:blog_user_home' blog.id %}" style="text-decoration: none; color: black;"><b>{{ blog.author }}</b></a>
             {% if blog.author.is_superuser %}
@@ -27,6 +31,15 @@
             {% else %}
               <button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-user"></span> 普通用户</button>
             {% endif %}&nbsp; | &nbsp; <b>{{ blog.date_added }}</b>
+          </div>
+          <div class="list-group list-group-horizontal" style="text-align:right; float: right;">
+            {% if user.is_superuser %}
+              {% if not blog.is_top %}
+                <a href="{% url 'contents:set_top_blog' blog.id %}" class="list-group-item btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-up">&nbsp;置顶</span></a>
+              {% else %}
+                <a href="{% url 'contents:unset_top_blog' blog.id %}" class="list-group-item btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-down">&nbsp;取消</span></a>
+              {% endif %}
+            {% endif %}
           </div>
         </div>
       </li>
