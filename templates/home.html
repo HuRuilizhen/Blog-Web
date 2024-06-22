@@ -22,12 +22,12 @@
         <br />
       </div>
 
-      <ul class="list-group" style="text-align: right; float: right;">
+      <ul class="list-group" style="text-align: left; float: right;">
         <small>
           <li class="list-group-item">博客总数 {{ profile.number_of_blogs }}</li>
           <li class="list-group-item">浏览总量 {{ profile.visit }}</li>
           <li class="list-group-item">当前积分 {{ profile.score }}</li>
-          <li class="list-group-item">本站排名 {{ rank }}</li>
+          <li class="list-group-item">本站排名 {{ profile.rank }}</li>
         </small>
       </ul>
     {% else %}

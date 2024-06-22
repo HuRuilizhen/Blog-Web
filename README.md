@@ -17,6 +17,8 @@ run following commands in the terminal
     pip install django-crispy-form==2.0
     pip install django-js-asset==2.1.0
     pip install martor==1.6.28
+    pip install celery==5.4.0
+    pip install redis==5.0.3
 ```
 
 ## To make migrations:

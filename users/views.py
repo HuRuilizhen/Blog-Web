@@ -8,30 +8,20 @@ from django.urls import reverse
 from contents.models import Blog
 from .models import *
 from .forms import *
-from django.db.models import F, Window
-from django.db.models.functions import Rank
+from .task import *
 from django.core.paginator import Paginator
 from Blogs.settings import USERS_PER_PAGE, SIGNUP_ALLOWED
-
-
-def get_rank(profile):
-    ranked_profiles = Profile.objects.annotate(
-        rank=Window(expression=Rank(), order_by=F("score").desc())
-    )
-
-    rank = ranked_profiles.get(id=profile.id).rank
-    return rank
 
 
 def home_view(request):
     if request.user.is_authenticated:
         current_user = request.user
         profile = current_user.profile
-        rank = get_rank(profile)
         blogs = Blog.objects.filter(
             is_delete=False, is_on_personal_page=True, author=current_user
         )
-        context = {"profile": profile, "rank": rank, "blogs": blogs}
+        update_all_users_rank()
+        context = {"profile": profile, "blogs": blogs}
         return render(request, "home.html", context)
     else:
         return render(request, "home.html")
@@ -47,11 +37,11 @@ def user_home_view(request, user_id):
             owner_user.profile.visit += 1
             owner_user.profile.save()
     profile = owner_user.profile
-    rank = get_rank(profile)
     blogs = Blog.objects.filter(
         is_delete=False, is_on_personal_page=True, author=owner_user
     )
-    context = {"profile": profile, "rank": rank, "blogs": blogs}
+    update_all_users_rank()
+    context = {"profile": profile, "blogs": blogs}
     return render(request, "user_home.html", context)
 
 
